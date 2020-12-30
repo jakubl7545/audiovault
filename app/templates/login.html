@@ -1,3 +1,4 @@
+{%import "bootstrap/wtf.html" as wtf%}
 <!doctype html>
 <html>
 <head>
@@ -9,7 +10,11 @@
 <body>
 	<div class="container">
 		{%include 'navbar.html'%}
-		<h1>Log in</ha>
+		<h1>Log in</h1>
+		{{wtf.quick_form(form)}}
+		<hr>
+		<p>Don't have an account?<br>
+		<a href="{{url_for('register')}}">Create one here</a></p>
 	</div>
 </body>
 </html>
