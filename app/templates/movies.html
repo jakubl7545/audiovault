@@ -10,6 +10,10 @@
 	<div class="container">
 		{%include 'navbar.html'%}
 		<h1>View movies</h1>
+		{%for movie in movies%}
+			<h2>{{movie.title}}</h1>
+			<p>{{movie.description}}</p>
+		{%endfor%}
 	</div>
 </body>
 </html>
