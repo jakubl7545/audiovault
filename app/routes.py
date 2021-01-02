@@ -1,8 +1,7 @@
 from flask import render_template, redirect, url_for
 from app import app
 from .forms import *
-from sqlalchemy.orm import sessionmaker
-from .models import engine, Users, Content
+from .models import session, Users, Content
 
 @app.route('/')
 def index():
@@ -28,16 +27,12 @@ def contact():
 
 @app.route('/shows')
 def shows():
-	Session = sessionmaker(bind=engine)
-	session = Session()
-	shows = session.query(Content.title, Content.description).filter_by(type='show').all()
+	shows = session.query(Content.id, Content.title, Content.description).filter_by(type='show').all()
 	return render_template('shows.html', shows=shows)
 
 @app.route('/movies')
 def movies():
-	Session = sessionmaker(bind=engine)
-	session = Session()
-	movies = session.query(Content.title, Content.description).filter_by(type='movie').all()
+	movies = session.query(Content.id, Content.title, Content.description).filter_by(type='movie').all()
 	return render_template('movies.html', movies=movies)
 
 @app.route('/upload', methods=['GET', 'POST'])
