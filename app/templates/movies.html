@@ -13,6 +13,8 @@
 		{%for movie in movies%}
 			<h2>{{movie.title}}</h1>
 			<p>{{movie.description}}</p>
+			<a href="{{url_for('delete', id=movie.id)}}">Delete</a>
+			<a href="{{url_for('edit', id=movie.id)}}">Edit</a>
 		{%endfor%}
 	</div>
 </body>

@@ -21,3 +21,9 @@ class RegisterForm(Form):
 	password = PasswordField('Password', [DataRequired()])
 	confirmPassword = PasswordField('Confirm password', [EqualTo('password'), DataRequired()])
 	submit = SubmitField('Register')
+
+class EditForm(Form):
+	title = StringField('Title', [DataRequired()])
+	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
+	description = TextAreaField('Description', [DataRequired()])
+	submit = SubmitField('Edit')

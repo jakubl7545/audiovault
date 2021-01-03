@@ -13,6 +13,8 @@
 		{%for show in shows %}
 			<h2>{{show.title}}</h2>
 			<p>{{show.description}}</p>
+			<a href="{{url_for('delete', id=show.id)}}">Delete</a>
+			<a href="{{url_for('edit', id=show.id)}}">Edit</a>
 		{%endfor%}
 	</div>
 </body>
