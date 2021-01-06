@@ -25,15 +25,10 @@ def register():
 def contact():
 	return render_template('contact.html')
 
-@app.route('/shows')
-def shows():
-	shows = session.query(Content.id, Content.title, Content.description).filter_by(type='show').all()
-	return render_template('shows.html', shows=shows)
-
-@app.route('/movies')
-def movies():
-	movies = session.query(Content.id, Content.title, Content.description).filter_by(type='movie').all()
-	return render_template('movies.html', movies=movies)
+@app.route('/<content_type>')
+def content(content_type):
+	items = session.query(Content.id, Content.title, Content.description).filter_by(type=content_type[:-1]).all()
+	return(render_template('content.html', content_type=content_type, items=items))
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
