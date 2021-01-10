@@ -1,7 +1,8 @@
 from wtforms import StringField, SelectField, TextAreaField, SubmitField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from flask_wtf import Form
-from .models import session, Users
+from app import db
+from .models import Users
 
 class UploadForm(Form):
 	name = StringField('Name', [DataRequired()])
@@ -23,12 +24,12 @@ class RegisterForm(Form):
 	submit = SubmitField('Register')
 
 	def validate_name(self, name):
-		user = session.query(Users.name).filter_by(name=name.data).first()
+		user = Users.query.with_entities(Users.name).filter_by(name=name.data).first()
 		if user is not None:
 			raise ValidationError('Please use a different username')
 
 	def validate_email(self, email):
-		user = session.query(Users.email).filter_by(email=email.data).first()
+		user = Users.query.with_entities(Users.email).filter_by(email=email.data).first()
 		if user is not None:
 			raise ValidationError('Please use a different e-mail address')
 

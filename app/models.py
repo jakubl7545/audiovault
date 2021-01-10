@@ -1,15 +1,7 @@
-from app import app
-import sqlalchemy
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-engine = sqlalchemy.create_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=True)
-Base = declarative_base()
-Base.metadata.reflect(engine)
-Session = sessionmaker(bind=engine)
-session = Session()
+from app import app, db
 
-class Content(Base):
-	__table__ = Base.metadata.tables['content']
+class Content(db.Model):
+	__table__ = db.Model.metadata.tables['content']
 
-class Users(Base):
-	__table__ = Base.metadata.tables['users']
+class Users(db.Model):
+	__table__ = db.Model.metadata.tables['users']

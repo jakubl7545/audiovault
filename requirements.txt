@@ -2,5 +2,5 @@ flask
 flask-wtf
 flask-bootstrap
 email-validator
-SQLAlchemy
+flask-sqlalchemy
 mariadb
