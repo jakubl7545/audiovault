@@ -18,6 +18,9 @@ def login():
 def register():
 	form = RegisterForm()
 	if form.validate_on_submit():
+		user = Users(name=form.name.data, email=form.email.data, password=form.password.data)
+		session.add(user)
+		session.commit()
 		return redirect(url_for('index'))
 	return render_template('register.html', form=form)
 
