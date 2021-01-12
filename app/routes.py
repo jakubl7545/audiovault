@@ -19,7 +19,7 @@ def login():
 		else:
 			login_user(user, remember=form.rememberMe.data)
 			return redirect(url_for('index'))
-	return render_template('login.html', form=form, error=login_error)
+	return render_template('login.html', form=form, error=error)
 
 @app.route('/logout')
 def logout():
