@@ -1,14 +1,20 @@
 <nav>
 	<a href="{{url_for('index')}}">Home</a>
 	<ul>
-		<li><a href="{{url_for('login')}}">Log in</a></li>
-		<li><a href="{{url_for('register')}}">Register</a></li>
+		{%if current_user.is_anonymous%}
+			<li><a href="{{url_for('login')}}">Log in</a></li>
+			<li><a href="{{url_for('register')}}">Register</a></li>
+		{%else%}
+			<li><a href="{{url_for('logout')}}">Log out</a></li>
+		{%endif%}
 		<li><a href="{{url_for('contact')}}">Contact us</a></li>
 		<li><a href="https://www.paypal.me/audiodescribed">Support us via paypal</a></li>
 	</ul>
 	<ul>
 		<li><a href="{{url_for('content', content_type='shows')}}">View shows</a></li>
 		<li><a href="{{url_for('content', content_type='movies')}}">View movies</a></li>
-		<li><a href="{{url_for('upload')}}">Upload</a></li>
+		{%if current_user.is_authenticated%}
+			<li><a href="{{url_for('upload')}}">Upload</a></li>
+		{%endif%}
 	</ul>
 </nav>

@@ -4,3 +4,4 @@ flask-bootstrap
 email-validator
 flask-sqlalchemy
 mariadb
+flask-login

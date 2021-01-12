@@ -11,6 +11,9 @@
 	<div class="container">
 		{%include 'navbar.html'%}
 		<h1>Log in</h1>
+		{%if error%}
+			<span>{{error}}</span>
+		{%endif%}
 		{{wtf.quick_form(form)}}
 		<hr>
 		<p>Don't have an account?<br>

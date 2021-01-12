@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for
 from app import app, db
+from flask_login import current_user, login_user, logout_user
 from .forms import *
 from .models import Users, Content
 
@@ -10,9 +11,20 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	form = LoginForm()
+	error = None
 	if form.validate_on_submit():
-		return redirect(url_for('index'))
-	return render_template('login.html', form=form)
+		user = Users.query.filter_by(email=form.email.data).first()
+		if user is None or user.password !=form.password.data:
+			error = 'Invalid username or password'
+		else:
+			login_user(user, remember=form.rememberMe.data)
+			return redirect(url_for('index'))
+	return render_template('login.html', form=form, error=login_error)
+
+@app.route('/logout')
+def logout():
+	logout_user()
+	return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
