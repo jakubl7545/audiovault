@@ -41,10 +41,14 @@ def register():
 def contact():
 	return render_template('contact.html')
 
-@app.route('/<content_type>')
+@app.route('/<content_type>', methods=['GET', 'POST'])
 def content(content_type):
 	items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type=content_type[:-1]).all()
-	return(render_template('content.html', content_type=content_type, items=items))
+	form = SearchForm()
+	if form.validate_on_submit():
+		items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+		type=content_type[:-1]).filter(Content.title.like("%"+form.search.data+"%")).all()
+	return render_template('content.html', content_type=content_type, items=items, form=form)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():

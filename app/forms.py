@@ -39,3 +39,7 @@ class EditForm(Form):
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
 	submit = SubmitField('Edit')
+
+class SearchForm(Form):
+	search = StringField('Enter                 a title')
+	submit = SubmitField('Search')
