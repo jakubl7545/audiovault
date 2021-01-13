@@ -3,6 +3,7 @@ from app import app, db
 from flask_login import current_user, login_user, logout_user
 from .forms import *
 from .models import Users, Content
+from .description_generator import get_description
 
 @app.route('/')
 def index():
@@ -48,7 +49,9 @@ def content(content_type):
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
 	form = UploadForm()
-	if form.validate_on_submit():
+	if form.generate_description.data:
+		form.description.data = get_description(form.name.data)
+	if form.submit.data and form.validate_on_submit():
 		content = Content(title=form.name.data, type=form.type.data, description=form.description.data)
 		db.session.add(content)
 		db.session.commit()

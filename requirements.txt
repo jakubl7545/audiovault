@@ -5,3 +5,4 @@ email-validator
 flask-sqlalchemy
 mariadb
 flask-login
+imdbpy

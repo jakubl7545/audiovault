@@ -1,5 +1,5 @@
-from wtforms import StringField, SelectField, TextAreaField, SubmitField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms import StringField, SelectField, TextAreaField, SubmitField, PasswordField, BooleanField
 from flask_wtf import Form
 from app import db
 from .models import Users
@@ -8,6 +8,7 @@ class UploadForm(Form):
 	name = StringField('Name', [DataRequired()])
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
+	generate_description = SubmitField('Generate description')
 	submit = SubmitField('Upload')
 
 class LoginForm(Form):
