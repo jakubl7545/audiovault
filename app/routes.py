@@ -15,7 +15,7 @@ def login():
 	error = None
 	if form.validate_on_submit():
 		user = Users.query.filter_by(email=form.email.data).first()
-		if user is None or user.password !=form.password.data:
+		if user is None or not user.check_password(form.password.data):
 			error = 'Invalid username or password'
 		else:
 			login_user(user, remember=form.rememberMe.data)
@@ -31,7 +31,8 @@ def logout():
 def register():
 	form = RegisterForm()
 	if form.validate_on_submit():
-		user = Users(name=form.name.data, email=form.email.data, password=form.password.data)
+		user = Users(name=form.name.data, email=form.email.data)
+		user.set_password(form.password.data)
 		db.session.add(user)
 		db.session.commit()
 		return redirect(url_for('index'))
