@@ -12,6 +12,25 @@
 		<h1>Welcome to the AudioVault</h1>
 		<p>Welcome to the Audiovault. This site contains the audio only portion of audio described film and TV shows. It is not intended to deprive copyright holders or service providers of income. Rather it is a small Project designed to make it easier for blind people to find and access audio described content that is spread across multiple platforms and countries. 
 		No video is hosted on this site. Nobody profits from this endeavour. It operates on donations from the small userbase purely in order to maintain the site.</p>
+		<h2>Recent shows</h2>
+		{%for show in shows%}
+			<h3>{{show.title}}</h3>
+			<p>{{show.description}}</p>
+			{%if current_user.is_authenticated%}
+				<a href="{{url_for('delete', id=show.id)}}">Delete</a>
+				<a href="{{url_for('edit', id=show.id)}}">Edit</a>
+			{%endif%}
+		{%endfor%}
+		<hr>
+		<h2>Recent movies</h2>
+		{%for movie in movies%}
+			<h3>{{movie.title}}</h3>
+			<p>{{movie.description}}</p>
+			{%if current_user.is_authenticated%}
+				<a href="{{url_for('delete', id=movie.id)}}">Delete</a>
+				<a href="{{url_for('edit', id=movie.id)}}">Edit</a>
+			{%endif%}
+		{%endfor%}
 	</div>
 </body>
 </html>

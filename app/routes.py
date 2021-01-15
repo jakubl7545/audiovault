@@ -4,10 +4,13 @@ from flask_login import current_user, login_user, logout_user
 from .forms import *
 from .models import Users, Content
 from .description_generator import get_description
+from datetime import datetime
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.date_of_modification.desc()).limit(3)
+	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.date_of_modification.desc()).limit(3)
+	return render_template('index.html', shows=recent_shows, movies=recent_movies)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -76,7 +79,7 @@ def edit(id):
 	form = EditForm(obj=item)
 	if form.validate_on_submit():
 		Content.query.filter_by(id=id).update(
-		{Content.title: form.title.data, Content.type: form.type.data, Content.description: form.description.data})
+		{Content.title: form.title.data, Content.type: form.type.data, Content.description: form.description.data, Content.date_of_modification: datetime.utcnow()})
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)
