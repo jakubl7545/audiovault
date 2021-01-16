@@ -11,7 +11,9 @@
 	<div class="container">
 		{%include 'navbar.html'%}
 		<h1>View {{content_type}}</h1>
-		{{wtf.quick_form(form)}}
+		{{wtf.quick_form(search_by_date_form)}}
+		<hr>
+		{{wtf.quick_form(search_form)}}
 		<hr>
 		{%for item in items%}
 			<h2>{{item.title}}</h2>
