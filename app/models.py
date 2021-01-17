@@ -5,6 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class Content(db.Model):
 	__table__ = db.Model.metadata.tables['content']
 
+class Featured(db.Model):
+	__table__ = db.Model.metadata.tables['featured']
+
 class Users(UserMixin, db.Model):
 	__table__ = db.Model.metadata.tables['users']
 	def get_id(self):

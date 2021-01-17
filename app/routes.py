@@ -2,15 +2,16 @@ from flask import render_template, redirect, url_for
 from app import app, db
 from flask_login import current_user, login_user, logout_user
 from .forms import *
-from .models import Users, Content
+from .models import Users, Content, Featured
 from .description_generator import get_description
 from datetime import datetime
 
 @app.route('/')
 def index():
+	featured = Content.query.join(Featured).with_entities(Content.id, Content.title, Content.description).order_by(Featured.id).all()
 	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.date_of_modification.desc()).limit(3)
 	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.date_of_modification.desc()).limit(3)
-	return render_template('index.html', shows=recent_shows, movies=recent_movies)
+	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -87,3 +88,13 @@ def edit(id):
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)
+
+@app.route('/add/<id>', methods=['GET', 'POST'])
+def add(id):
+	if Featured.query.count() == 2:
+		deleted_item = Featured.query.order_by(Featured.id).first()
+		db.session.delete(deleted_item)
+	featured = Featured(content_id=id)
+	db.session.add(featured)
+	db.session.commit()
+	return redirect(url_for('index'))
