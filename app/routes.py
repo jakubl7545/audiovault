@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from app import app, db
 from flask_login import current_user, login_user, logout_user
 from .forms import *
@@ -49,15 +49,14 @@ def contact():
 @app.route('/<content_type>', methods=['GET', 'POST'])
 def content(content_type):
 	items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type=content_type[:-1]).all()
-	search_by_date_form = SearchByDateForm()
-	search_form = SearchForm()
-	if search_by_date_form.submit1.data and search_by_date_form.validate_on_submit():
+	if 'date' in request.args:
 		items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.date_of_upload>=search_by_date_form.date.data).all()
-	elif search_form.submit2.data and search_form.validate_on_submit():
+		type=content_type[:-1]).filter(Content.date_of_upload>=request.args.get('date')).all()
+	elif 'search' in request.args:
 		items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.title.like("%"+search_form.search.data+"%")).all()
-	return render_template('content.html', content_type=content_type, items=items, search_by_date_form=search_by_date_form, search_form=search_form)
+		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).all()
+	return render_template('content.html', content_type=content_type, items=items)
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
