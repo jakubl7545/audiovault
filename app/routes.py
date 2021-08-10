@@ -90,7 +90,7 @@ def edit(id):
 
 @app.route('/add/<id>', methods=['GET', 'POST'])
 def add(id):
-	if Featured.query.count() == 2:
+	if Featured.query.count() == 3:
 		deleted_item = Featured.query.order_by(Featured.id).first()
 		db.session.delete(deleted_item)
 	featured = Featured(content_id=id)

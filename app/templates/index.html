@@ -14,8 +14,10 @@
 		No video is hosted on this site. Nobody profits from this endeavour. It operates on donations from the small userbase purely in order to maintain the site.</p>
 		<h2>Featured</h2>
 		{%for item in featured%}
-			<h3>{{item.title}}</h3>
-			<p>{{item.description}}</p>
+			<button class="collapsible" aria-controls="content" aria-expanded="false">{{item.title}}</button>
+			<div class="content" style="display:none">
+				<p>{{item.description}}</p>
+			</div>
 		{%endfor%}
 		<hr>
 		<h2>Recent shows</h2>
@@ -40,5 +42,6 @@
 			{%endif%}
 		{%endfor%}
 	</div>
+	<script src="{{url_for('static', filename='scripts.js')}}"></script>
 </body>
 </html>
