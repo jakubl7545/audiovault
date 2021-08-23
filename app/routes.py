@@ -9,8 +9,8 @@ from datetime import datetime
 @app.route('/')
 def index():
 	featured = Content.query.join(Featured).with_entities(Content.id, Content.title, Content.description).order_by(Featured.id).all()
-	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.date_of_modification.desc()).limit(3)
-	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.date_of_modification.desc()).limit(3)
+	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.date_of_modification.desc()).limit(app.config['RECENTLY_ADDED'])
+	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.date_of_modification.desc()).limit(app.config['RECENTLY_ADDED'])
 	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies)
 
 @app.route('/login', methods=['GET', 'POST'])
