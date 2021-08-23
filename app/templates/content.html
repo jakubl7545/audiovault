@@ -22,15 +22,28 @@
 			<button>Search</button>
 		</form>
 		<hr>
-		{%for item in items%}
-			<h2>{{item.title}}</h2>
-			<p>{{item.description}}</p>
-			{%if current_user.is_authenticated%}
-				<a href="{{url_for('delete', id=item.id)}}">Delete</a>
-				<a href="{{url_for('edit', id=item.id)}}">Edit</a>
-				<a href="{{url_for('add', id=item.id)}}">Add to featured</a>
-			{%endif%}
-		{%endfor%}
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Actions</th>
+			</tr>
+			{%for item in items%}
+			<tr>
+				<td>{{item.id}}</td>
+				<td>{{item.title}}</td>
+				<td>{{item.description}}</td>
+				<td>
+				{%if current_user.is_authenticated%}
+					<a href="{{url_for('delete', id=item.id)}}">Delete</a>
+					<a href="{{url_for('edit', id=item.id)}}">Edit</a>
+					<a href="{{url_for('add', id=item.id)}}">Add to featured</a>
+				{%endif%}
+				</td>
+			</tr>
+			{%endfor%}
+		</table>
 	</div>
 </body>
 </html>
