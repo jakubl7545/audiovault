@@ -29,21 +29,35 @@
 				<th>Description</th>
 				<th>Actions</th>
 			</tr>
-			{%for item in items%}
+			{%for entry in entries.items%}
 			<tr>
-				<td>{{item.id}}</td>
-				<td>{{item.title}}</td>
-				<td>{{item.description}}</td>
+				<td>{{entry.id}}</td>
+				<td>{{entry.title}}</td>
+				<td>{{entry.description}}</td>
 				<td>
 				{%if current_user.is_authenticated%}
-					<a href="{{url_for('delete', id=item.id)}}">Delete</a>
-					<a href="{{url_for('edit', id=item.id)}}">Edit</a>
-					<a href="{{url_for('add', id=item.id)}}">Add to featured</a>
+					<a href="{{url_for('delete', id=entry.id)}}">Delete</a>
+					<a href="{{url_for('edit', id=entry.id)}}">Edit</a>
+					<a href="{{url_for('add', id=entry.id)}}">Add to featured</a>
 				{%endif%}
 				</td>
 			</tr>
 			{%endfor%}
 		</table>
+		<div role="navigation">
+		{% for page in entries.iter_pages(left_edge=config.PAGINATION_EDGE, left_current=config.PAGINATION_CURRENT,
+		right_current=config.PAGINATION_CURRENT, right_edge=config.PAGINATION_EDGE) %}
+			{% if page %}
+				{% if page != entries.page %}
+					<a href="{{url_for('content', content_type=content_type, page=page)}}"> {{page}} </a>
+				{% else %}
+					<p aria-current="page"> {{page}} </p>
+				{% endif %}
+			{% else %}
+				<span>...</span>
+			{% endif %}
+		{% endfor %}
+		</div>
 	</div>
 </body>
 </html>

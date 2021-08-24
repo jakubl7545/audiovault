@@ -48,15 +48,16 @@ def contact():
 
 @app.route('/<content_type>', methods=['GET', 'POST'])
 def content(content_type):
-	items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type=content_type[:-1]).all()
+	page=request.args.get('page', 1, type=int)
+	entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+	type=content_type[:-1]).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	if 'date' in request.args:
-		items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.date_of_upload>=request.args.get('date')).all()
+		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+		type=content_type[:-1]).filter(Content.date_of_upload>=request.args.get('date')).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	elif 'search' in request.args:
-		items = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).all()
-	return render_template('content.html', content_type=content_type, items=items)
-
+		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+	return render_template('content.html', content_type=content_type, entries=entries)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
