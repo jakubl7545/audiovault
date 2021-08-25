@@ -1,5 +1,5 @@
-from flask import render_template, redirect, url_for, request
 from app import app, db
+from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user
 from .forms import *
 from .models import Users, Content, Featured
@@ -50,13 +50,13 @@ def contact():
 def content(content_type):
 	page=request.args.get('page', 1, type=int)
 	entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-	type=content_type[:-1]).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+	type=content_type[:-1]).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	if 'date' in request.args:
 		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.date_of_upload>=request.args.get('date')).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		type=content_type[:-1]).filter(Content.date_of_upload>=request.args.get('date')).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	elif 'search' in request.args:
 		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	return render_template('content.html', content_type=content_type, entries=entries)
 
 @app.route('/upload', methods=['GET', 'POST'])
