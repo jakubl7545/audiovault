@@ -1,4 +1,5 @@
 from wtforms import StringField, SelectField, TextAreaField, SubmitField, PasswordField, BooleanField
+from wtforms.fields.html5 import DateField, SearchField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from flask_wtf import Form
 from app import db
@@ -39,3 +40,9 @@ class EditForm(Form):
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
 	submit = SubmitField('Edit')
+
+class SearchByDateForm(Form):
+	date = DateField('From date')
+
+class SearchForm(Form):
+	search = SearchField('Enter the title')

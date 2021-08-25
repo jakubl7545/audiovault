@@ -46,8 +46,10 @@ def register():
 def contact():
 	return render_template('contact.html')
 
-@app.route('/<content_type>', methods=['GET', 'POST'])
+@app.route('/<content_type>')
 def content(content_type):
+	search_by_date_form = SearchByDateForm(request.args)
+	search_form = SearchForm(request.args)
 	page=request.args.get('page', 1, type=int)
 	entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
 	type=content_type[:-1]).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
@@ -57,7 +59,7 @@ def content(content_type):
 	elif 'search' in request.args:
 		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
 		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
-	return render_template('content.html', content_type=content_type, entries=entries)
+	return render_template('content.html', content_type=content_type, entries=entries, search_by_date_form=search_by_date_form, search_form=search_form)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
