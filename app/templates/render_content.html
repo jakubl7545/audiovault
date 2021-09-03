@@ -11,11 +11,11 @@
 		<td>{{entry.title}}</td>
 		<td>{{entry.description}}</td>
 		<td>
-		{%if current_user.is_authenticated%}
+		{% if current_user.is_admin == 1 %}
 			<a href="{{url_for('delete', id=entry.id)}}">Delete</a>
 			<a href="{{url_for('edit', id=entry.id)}}">Edit</a>
 			<a href="{{url_for('add', id=entry.id)}}">Add to featured</a>
-		{%endif%}
+		{% endif %}
 		</td>
 	</tr>
 	{%endfor%}
