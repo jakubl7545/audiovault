@@ -9,8 +9,8 @@ from datetime import datetime
 @app.route('/')
 def index():
 	featured = Content.query.join(Featured).with_entities(Content.id, Content.title, Content.description).order_by(Featured.id).all()
-	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.date_of_modification.desc()).limit(app.config['RECENTLY_ADDED'])
-	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.date_of_modification.desc()).limit(app.config['RECENTLY_ADDED'])
+	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
+	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
 	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -55,7 +55,7 @@ def content(content_type):
 	type=content_type[:-1]).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	if 'date' in request.args:
 		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.date_of_upload>=request.args.get('date')).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		type=content_type[:-1]).filter(Content.created_at>=request.args.get('date')).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	elif 'search' in request.args:
 		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
 		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
@@ -86,7 +86,7 @@ def edit(id):
 	form = EditForm(obj=item)
 	if form.validate_on_submit():
 		Content.query.filter_by(id=id).update(
-		{Content.title: form.title.data, Content.type: form.type.data, Content.description: form.description.data, Content.date_of_modification: datetime.utcnow()})
+		{Content.title: form.title.data, Content.type: form.type.data, Content.description: form.description.data, Content.updated_at: datetime.utcnow()})
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)

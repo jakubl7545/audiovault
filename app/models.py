@@ -11,7 +11,7 @@ class Featured(db.Model):
 class Users(UserMixin, db.Model):
 	__table__ = db.Model.metadata.tables['users']
 	def get_id(self):
-		return self.user_id
+		return self.id
 	
 	def set_password(self, password):
 		self.password = generate_password_hash(password)
