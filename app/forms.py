@@ -46,3 +46,7 @@ class SearchByDateForm(Form):
 
 class SearchForm(Form):
 	search = SearchField('Enter the title')
+
+class NewsForm(Form):
+	content = TextAreaField('Text', [DataRequired()])
+	submit = SubmitField('Send')

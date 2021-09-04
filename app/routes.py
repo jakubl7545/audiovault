@@ -2,16 +2,17 @@ from app import app, db
 from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user
 from .forms import *
-from .models import Users, Content, Featured
+from .models import Users, Content, Featured, News
 from .description_generator import get_description
 from datetime import datetime
 
 @app.route('/')
 def index():
 	featured = Content.query.join(Featured).with_entities(Content.id, Content.title, Content.description).order_by(Featured.id).all()
+	news = News.query.order_by(News.id.desc())
 	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
 	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
-	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies)
+	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies, news=news)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -100,3 +101,13 @@ def add(id):
 	db.session.add(featured)
 	db.session.commit()
 	return redirect(url_for('index'))
+
+@app.route('/news', methods=['GET', 'POST'])
+def news():
+	form = NewsForm()
+	if form.validate_on_submit():
+		news = News(content=form.content.data)
+		db.session.add(news)
+		db.session.commit()
+		return redirect(url_for('index'))
+	return render_template('news.html', form=form)

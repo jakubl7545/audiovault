@@ -22,3 +22,6 @@ class Users(UserMixin, db.Model):
 @login.user_loader
 def load_user(id):
 	return Users.query.get(int(id))
+
+class News(db.Model):
+	__table__ = db.Model.metadata.tables['news']

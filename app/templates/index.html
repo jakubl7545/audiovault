@@ -20,6 +20,15 @@
 			</div>
 		{%endfor%}
 		<hr>
+		<h2>News</h2>
+		{% if current_user.is_admin == 1 %}
+			<a href="{{url_for('news')}}">Add news</a>
+		{% endif %}
+		{% for info in news %}
+			<h3>{{info.created_at}}</h3>
+		<p>{{info.content}}</p>
+		{% endfor %}
+		<hr>
 		<h2>Recent shows</h2>
 		{% with entries=shows %}
 			{% include 'render_content.html' %}
