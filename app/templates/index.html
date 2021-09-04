@@ -38,6 +38,10 @@
 		{% with entries=movies %}
 			{% include 'render_content.html' %}
 		{% endwith %}
+		<footer>
+			<a href="{{url_for('content', content_type='downloaded')}}">View downloaded</a>
+			<a href="{{url_for('content', content_type='failed')}}">View failed</a>
+		</footer>
 	</div>
 	<script src="{{url_for('static', filename='scripts.js')}}"></script>
 </body>

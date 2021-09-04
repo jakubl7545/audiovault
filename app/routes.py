@@ -10,8 +10,10 @@ from datetime import datetime
 def index():
 	featured = Content.query.join(Featured).with_entities(Content.id, Content.title, Content.description).order_by(Featured.id).all()
 	news = News.query.order_by(News.id.desc())
-	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
-	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
+	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+		downloaded=1).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
+	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+		downloaded=1).filter_by(type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
 	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies, news=news)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -52,14 +54,37 @@ def content(content_type):
 	search_by_date_form = SearchByDateForm(request.args)
 	search_form = SearchForm(request.args)
 	page=request.args.get('page', 1, type=int)
-	entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-	type=content_type[:-1]).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
-	if 'date' in request.args:
+	if content_type == 'downloaded':
 		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.created_at>=request.args.get('date')).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
-	elif 'search' in request.args:
+			downloaded=1).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		if 'date' in request.args:
+			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+				downloaded=1).filter(Content.created_at >= request.args.get('date')).order_by(
+				Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		elif 'search' in request.args:
+			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+				downloaded=1).filter(Content.title.like("%" + request.args.get('search') + "%")).order_by(
+				Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+	elif content_type == 'failed':
 		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+			failed=1).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		if 'date' in request.args:
+			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+				failed=1).filter(Content.created_at >= request.args.get('date')).order_by(
+				Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		elif 'search' in request.args:
+			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+				failed=1).filter(Content.title.like("%" + request.args.get('search') + "%")).order_by(
+				Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+	else:
+		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+		downloaded=1).filter_by(type=content_type[:-1]).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		if 'date' in request.args:
+			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+			downloaded=1).filter_by(type=content_type[:-1]).filter(Content.created_at>=request.args.get('date')).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
+		elif 'search' in request.args:
+			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
+			downloaded=1).filter_by(type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(Content.title).paginate(page, app.config['ITEMS_PER_PAGE'], False)
 	return render_template('content.html', content_type=content_type, entries=entries, search_by_date_form=search_by_date_form, search_form=search_form)
 
 @app.route('/upload', methods=['GET', 'POST'])
