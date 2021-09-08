@@ -89,6 +89,8 @@ def content(content_type):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
 	form = UploadForm()
 	if form.generate_description.data:
 		form.description.data = get_description(form.name.data)
@@ -101,6 +103,8 @@ def upload():
 
 @app.route('/delete/<id>')
 def delete(id):
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
 	deleted_item = Content.query.filter_by(id=id).first()
 	db.session.delete(deleted_item)
 	db.session.commit()
@@ -108,6 +112,8 @@ def delete(id):
 
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 def edit(id):
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
 	item = Content.query.with_entities(Content.title, Content.type, Content.description).filter_by(id=id).first()
 	form = EditForm(obj=item)
 	if form.validate_on_submit():
@@ -119,6 +125,8 @@ def edit(id):
 
 @app.route('/add/<id>', methods=['GET', 'POST'])
 def add(id):
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
 	if Featured.query.count() == app.config['NUMBER_OF_FEATURED']:
 		deleted_item = Featured.query.order_by(Featured.id).first()
 		db.session.delete(deleted_item)
