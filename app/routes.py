@@ -95,7 +95,14 @@ def upload():
 	if form.generate_description.data:
 		form.description.data = get_description(form.name.data)
 	if form.submit.data and form.validate_on_submit():
-		content = Content(title=form.name.data, type=form.type.data, description=form.description.data)
+		uploaded_file = request.files['file']
+		if form.type.data == 'movie':
+			file_path = ''.join((app.config['PATH_FOR_MOVIES'], uploaded_file.filename))
+			uploaded_file.save(file_path)
+		elif form.type.data == 'show':
+			file_path = ''.join((app.config['PATH_FOR_SHOWS'], uploaded_file.filename))
+			uploaded_file.save(file_path)
+		content = Content(title=form.name.data, type=form.type.data, description=form.description.data, file_path=file_path)
 		db.session.add(content)
 		db.session.commit()
 		return redirect(url_for('index'))

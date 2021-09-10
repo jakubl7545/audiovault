@@ -1,16 +1,23 @@
 from wtforms import StringField, SelectField, TextAreaField, SubmitField, PasswordField, BooleanField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.fields.html5 import DateField, SearchField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from flask_wtf import FlaskForm as Form
 from app import db
-from .models import Users
+from .models import Content, Users
 
 class UploadForm(Form):
 	name = StringField('Name', [DataRequired()])
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
 	generate_description = SubmitField('Generate description')
+	file = FileField('Choose a field', [FileRequired(), FileAllowed(['mp3', 'zip'])])
 	submit = SubmitField('Upload')
+
+	def validate_name(self, name):
+		content = Content.query.with_entities(Content.title).filter_by(title=name.data).first()
+		if content is not None:
+			raise ValidationError('This item is already uploaded')
 
 class LoginForm(Form):
 	email = StringField('E-mail address', [Email(), DataRequired()])
