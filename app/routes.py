@@ -1,10 +1,12 @@
-from app import app, db
-from flask import render_template, redirect, url_for, request
-from flask_login import current_user, login_user, logout_user
+from app import app, db, login
+from flask import render_template, redirect, url_for, request, send_file
+from flask_login import current_user, login_user, logout_user, login_required
 from .forms import *
 from .models import Users, Content, Featured, News
 from .description_generator import get_description
 from datetime import datetime
+
+login.login_view = 'login'
 
 @app.route('/')
 def index():
@@ -20,13 +22,14 @@ def index():
 def login():
 	form = LoginForm()
 	error = None
+	next = request.args.get('next')
 	if form.validate_on_submit():
 		user = Users.query.filter_by(email=form.email.data).first()
 		if user is None or not user.check_password(form.password.data):
 			error = 'Invalid username or password'
 		else:
 			login_user(user, remember=form.rememberMe.data)
-			return redirect(url_for('index'))
+			return redirect(next or url_for('index'))
 	return render_template('login.html', form=form, error=error)
 
 @app.route('/logout')
@@ -107,6 +110,13 @@ def upload():
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('upload.html', form=form)
+
+@app.route('/download/<id>')
+@login_required
+def download(id):
+	file_path = Content.query.with_entities(Content.file_path).filter_by(id=id).first()[0]
+	return send_file(file_path, as_attachment=True)
+
 
 @app.route('/delete/<id>')
 def delete(id):

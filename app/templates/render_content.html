@@ -11,6 +11,9 @@
 		<td>{{entry.title}}</td>
 		<td>{{entry.description}}</td>
 		<td>
+			{% if content_type != 'failed' %}
+				<a href="{{url_for('download', id=entry.id)}}">Download</a>
+			{% endif %}
 		{% if current_user.is_admin == 1 %}
 			<a href="{{url_for('delete', id=entry.id)}}">Delete</a>
 			<a href="{{url_for('edit', id=entry.id)}}">Edit</a>
