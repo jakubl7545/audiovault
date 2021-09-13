@@ -5,6 +5,7 @@ from .forms import *
 from .models import Users, Content, Featured, News
 from .description_generator import get_description
 from datetime import datetime
+from os import remove, replace
 
 login.login_view = 'login'
 
@@ -125,17 +126,21 @@ def delete(id):
 	deleted_item = Content.query.filter_by(id=id).first()
 	db.session.delete(deleted_item)
 	db.session.commit()
+	remove(deleted_item.file_path)
 	return redirect(url_for('index'))
 
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 def edit(id):
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	item = Content.query.with_entities(Content.title, Content.type, Content.description).filter_by(id=id).first()
+	item = Content.query.with_entities(Content.title, Content.type, Content.description, Content.file_path).filter_by(id=id).first()
 	form = EditForm(obj=item)
 	if form.validate_on_submit():
+		if item.file_path != form.file_path.data:
+			replace(item.file_path, form.file_path.data)
 		Content.query.filter_by(id=id).update(
-		{Content.title: form.title.data, Content.type: form.type.data, Content.description: form.description.data, Content.updated_at: datetime.utcnow()})
+		{Content.title: form.title.data, Content.type: form.type.data, Content.description: form.description.data,
+		Content.file_path: form.file_path.data, Content.updated_at: datetime.utcnow()})
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)

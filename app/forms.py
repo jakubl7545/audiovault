@@ -46,6 +46,7 @@ class EditForm(Form):
 	title = StringField('Title', [DataRequired()])
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
+	file_path = StringField('File path', [DataRequired()])
 	submit = SubmitField('Edit')
 
 class SearchByDateForm(Form):
