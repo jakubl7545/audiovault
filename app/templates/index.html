@@ -17,6 +17,7 @@
 			<button class="collapsible" aria-controls="content" aria-expanded="false">{{item.title}}</button>
 			<div class="content" style="display:none">
 				<p>{{item.description}}</p>
+				<a href="{{url_for('download', id=item.id)}}">Download</a>
 			</div>
 		{%endfor%}
 		<hr>
