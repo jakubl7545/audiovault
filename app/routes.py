@@ -120,15 +120,22 @@ def download(id):
 	return send_file(file_path, as_attachment=True)
 
 
-@app.route('/delete/<id>')
+@app.route('/delete/<id>', methods=['GET', 'POST'])
 def delete(id):
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	deleted_item = Content.query.filter_by(id=id).first()
-	db.session.delete(deleted_item)
-	db.session.commit()
-	remove(deleted_item.file_path)
-	return redirect(url_for('index'))
+	form = DeleteForm()
+	name = Content.query.with_entities(Content.title).filter_by(id=id).first()[0]
+	if form.yes.data:
+		deleted_item = Content.query.filter_by(id=id).first()
+		db.session.delete(deleted_item)
+		db.session.commit()
+		if deleted_item.file_path is not None:
+			remove(deleted_item.file_path)
+		return redirect(url_for('index'))
+	elif form.no.data:
+		return redirect(url_for('index'))
+	return render_template('delete.html', form=form, name=name)
 
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 def edit(id):
