@@ -1,5 +1,5 @@
 from app import app, db, login
-from flask import render_template, redirect, url_for, request, send_file
+from flask import render_template, redirect, url_for, request, send_file, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from .forms import *
 from .models import Users, Content, Featured, News
@@ -153,17 +153,30 @@ def edit(id):
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)
 
-@app.route('/add/<id>', methods=['GET', 'POST'])
-def add(id):
+@app.route('/add', methods=['POST'])
+def add():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	if Featured.query.count() == app.config['NUMBER_OF_FEATURED']:
-		deleted_item = Featured.query.order_by(Featured.id).first()
-		db.session.delete(deleted_item)
-	featured = Featured(content_id=id)
-	db.session.add(featured)
+	try:
+		if Featured.query.count() == app.config['NUMBER_OF_FEATURED']:
+			deleted_item = Featured.query.order_by(Featured.id).first()
+			db.session.delete(deleted_item)
+		featured = Featured(content_id=request.form['id'])
+		db.session.add(featured)
+		db.session.commit()
+		message = 'Added to featured'
+	except:
+		message = 'Already in featured'
+	return jsonify({'message': message})
+
+@app.route('/remove', methods=['POST'])
+def remove():
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
+	removed_item = Featured.query.filter_by(content_id=request.form['id']).first()
+	db.session.delete(removed_item)
 	db.session.commit()
-	return redirect(url_for('index'))
+	return ''
 
 @app.route('/news', methods=['GET', 'POST'])
 def news():

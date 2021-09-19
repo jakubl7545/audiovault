@@ -2,10 +2,10 @@ function toggleFeatured() {
 	var content = this.nextElementSibling;
 	if (content.style.display == "none") {
 		content.style.display = "block";
-		this.ariaExpanded = "true";
+		this.ariaExpanded = true;
 	} else {
 		content.style.display = "none";
-		this.ariaExpanded = "false";
+		this.ariaExpanded = false;
 	}
 }
 var buttons = document.querySelectorAll('.collapsible');

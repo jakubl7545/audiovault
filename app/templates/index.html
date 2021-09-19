@@ -18,6 +18,9 @@
 			<div class="content" style="display:none">
 				<p>{{item.description}}</p>
 				<a href="{{url_for('download', id=item.id)}}">Download</a>
+				{% if current_user.is_admin == 1 %}
+					<button class="removeButton" id="{{item.id}}">Remove from featured</button>
+				{% endif %}
 			</div>
 		{%endfor%}
 		<hr>
@@ -44,6 +47,9 @@
 			<a href="{{url_for('content', content_type='failed')}}">View failed</a>
 		</footer>
 	</div>
-	<script src="{{url_for('static', filename='scripts.js')}}"></script>
+	<script src="{{url_for('static', filename='toggleFeatured.js')}}"></script>
+	<script src="{{url_for('static', filename='addToFeatured.js')}}"></script>
+	<script src="{{url_for('static', filename='removeFromFeatured.js')}}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </body>
 </html>
