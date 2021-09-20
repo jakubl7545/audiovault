@@ -21,7 +21,7 @@
 			{{form.type}}
 			{{form.description.label}}
 			{{form.description}}
-			{{form.generate_description}}
+			<button id="generate_description" type="button">Generate description</button>
 			{{form.file}}
 			{% for error in form.file.errors %}
 				<p>{{error}}</p>
@@ -29,5 +29,7 @@
 			{{form.submit}}
 		</form>
 	</div>
+<script src="{{url_for('static', filename='generateDescription.js')}}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </body>
 </html>

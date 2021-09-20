@@ -10,7 +10,6 @@ class UploadForm(Form):
 	name = StringField('Name', [DataRequired()])
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
-	generate_description = SubmitField('Generate description')
 	file = FileField('Choose a field', [FileRequired(), FileAllowed(['mp3', 'zip'])])
 	submit = SubmitField('Upload')
 

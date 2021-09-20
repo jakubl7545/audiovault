@@ -97,8 +97,6 @@ def upload():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	form = UploadForm()
-	if form.generate_description.data:
-		form.description.data = get_description(form.name.data)
 	if form.submit.data and form.validate_on_submit():
 		uploaded_file = request.files['file']
 		if form.type.data == 'movie':
@@ -112,6 +110,11 @@ def upload():
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('upload.html', form=form)
+
+@app.route('/generate', methods=['POST'])
+def generate():
+	description = get_description(request.form['title'])
+	return jsonify({'description': description})
 
 @app.route('/download/<id>')
 @login_required
