@@ -7,3 +7,4 @@ mariadb
 flask-login
 imdbpy
 pytest
+flask-bcrypt

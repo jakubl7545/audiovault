@@ -36,7 +36,7 @@ def login():
 @app.route('/logout')
 def logout():
 	logout_user()
-	return render_template('index.html')
+	return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
