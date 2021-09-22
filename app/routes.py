@@ -50,6 +50,18 @@ def register():
 		return redirect(url_for('index'))
 	return render_template('register.html', form=form)
 
+@app.route('/change', methods=['GET', 'POST'])
+def change():
+	form = ChangeForm()
+	if form.validate_on_submit():
+		user = Users(id=current_user.id)
+		user.set_password(form.new_password.data)
+		Users.query.filter_by(id=current_user.id).update(
+			{Users.password: user.password})
+		db.session.commit()
+		return redirect(url_for('index'))
+	return render_template('change.html', form=form)
+
 @app.route('/contact')
 def contact():
 	return render_template('contact.html')

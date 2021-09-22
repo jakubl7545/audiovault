@@ -4,6 +4,7 @@ from wtforms.fields.html5 import DateField, SearchField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from flask_wtf import FlaskForm as Form
 from app import db
+from flask_login import current_user
 from .models import Content, Users
 
 class UploadForm(Form):
@@ -40,6 +41,17 @@ class RegisterForm(Form):
 		user = Users.query.with_entities(Users.email).filter_by(email=email.data).first()
 		if user is not None:
 			raise ValidationError('Please use a different e-mail address')
+
+class ChangeForm(Form):
+	current_password = PasswordField('Current password', [DataRequired()])
+	new_password = PasswordField('New password', [DataRequired()])
+	confirm_password = PasswordField('Confirm new password', [EqualTo('new_password'), DataRequired()])
+	submit = SubmitField('Change password')
+
+	def validate_current_password(self, current_password):
+		user = Users.query.filter_by(id=current_user.id).first()
+		if not user.check_password(current_password.data):
+			raise ValidationError('Your current password is invalid')
 
 class EditForm(Form):
 	title = StringField('Title', [DataRequired()])
