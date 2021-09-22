@@ -31,6 +31,9 @@
 		{% for info in news %}
 			<h3>{{info.created_at}}</h3>
 		<p>{{info.content}}</p>
+		{% if current_user.is_admin == 1 %}
+			<a href="{{url_for('modify', id=info.id)}}">Modify news</a>
+		{% endif %}
 		{% endfor %}
 		<hr>
 		<h2>Recent shows</h2>

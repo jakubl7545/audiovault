@@ -61,3 +61,7 @@ class NewsForm(Form):
 class DeleteForm(Form):
 	yes = SubmitField('Yes')
 	no = SubmitField('no')
+
+class ModifyForm(Form):
+	content = TextAreaField('Text', [DataRequired()])
+	submit = SubmitField('Modify')

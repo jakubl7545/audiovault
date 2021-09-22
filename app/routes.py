@@ -190,3 +190,15 @@ def news():
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('news.html', form=form)
+
+@app.route('/modify/<id>', methods=['GET', 'POST'])
+def modify(id):
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
+	item = News.query.filter_by(id=id).first()
+	form = ModifyForm(obj=item)
+	if form.validate_on_submit():
+		News.query.filter_by(id=id).update({News.content: form.content.data})
+		db.session.commit()
+		return redirect(url_for('index'))
+	return render_template('edit.html', form=form)
