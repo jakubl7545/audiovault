@@ -22,16 +22,11 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	form = LoginForm()
-	error = None
-	next = request.args.get('next')
 	if form.validate_on_submit():
 		user = Users.query.filter_by(email=form.email.data).first()
-		if user is None or not user.check_password(form.password.data):
-			error = 'Invalid username or password'
-		else:
-			login_user(user, remember=form.rememberMe.data)
-			return redirect(next or url_for('index'))
-	return render_template('login.html', form=form, error=error)
+		login_user(user, remember=form.rememberMe.data)
+		return redirect(url_for('index'))
+	return render_template('login.html', form=form)
 
 @app.route('/logout')
 def logout():
@@ -133,7 +128,6 @@ def generate():
 def download(id):
 	file_path = Content.query.with_entities(Content.file_path).filter_by(id=id).first()[0]
 	return send_file(file_path, as_attachment=True)
-
 
 @app.route('/delete/<id>', methods=['GET', 'POST'])
 def delete(id):

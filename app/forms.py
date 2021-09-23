@@ -1,7 +1,7 @@
 from wtforms import StringField, SelectField, TextAreaField, SubmitField, PasswordField, BooleanField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.fields.html5 import DateField, SearchField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, StopValidation
 from flask_wtf import FlaskForm as Form
 from app import db
 from flask_login import current_user
@@ -24,6 +24,18 @@ class LoginForm(Form):
 	password = PasswordField('Password', [DataRequired()])
 	rememberMe = BooleanField('Remember me')
 	submit = SubmitField('Log in')
+
+	def validate_email(self, email):
+		user = Users.query.filter_by(email=email.data).first()
+		if user is None:
+			raise ValidationError('Your email is invalid')
+
+	def validate_password(self, password):
+		user = Users.query.filter_by(email=self.email.data).first()
+		if user is None:
+			raise StopValidation()
+		elif not user.check_password(password.data):
+			raise ValidationError('Your password is invalid')
 
 class RegisterForm(Form):
 	name = StringField('User name', [DataRequired()])
