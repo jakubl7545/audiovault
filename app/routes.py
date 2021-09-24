@@ -5,7 +5,7 @@ from .forms import *
 from .models import Users, Content, Featured, News
 from .description_generator import get_description
 from datetime import datetime
-from os import remove, replace
+from os import remove as rm, replace
 
 login.login_view = 'login'
 
@@ -140,7 +140,7 @@ def delete(id):
 		db.session.delete(deleted_item)
 		db.session.commit()
 		if deleted_item.file_path is not None:
-			remove(deleted_item.file_path)
+			rm(deleted_item.file_path)
 		return redirect(url_for('index'))
 	elif form.no.data:
 		return redirect(url_for('index'))
