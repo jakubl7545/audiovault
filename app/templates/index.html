@@ -14,7 +14,7 @@
 		No video is hosted on this site. Nobody profits from this endeavour. It operates on donations from the small userbase purely in order to maintain the site.</p>
 		<h2>Featured</h2>
 		{%for item in featured%}
-			<button class="collapsible" aria-controls="content" aria-expanded="false">{{item.title}}</button>
+			<button class="collapsible" aria-expanded="false">{{item.title}}</button>
 			<div class="content" style="display:none">
 				<p>{{item.description}}</p>
 				<a href="{{url_for('download', id=item.id)}}">Download</a>

@@ -1,11 +1,11 @@
 function toggleFeatured() {
 	var content = this.nextElementSibling;
 	if (content.style.display == "none") {
+		this.setAttribute("aria-expanded", true);
 		content.style.display = "block";
-		this.ariaExpanded = true;
 	} else {
+		this.setAttribute("aria-expanded", false);
 		content.style.display = "none";
-		this.ariaExpanded = false;
 	}
 }
 var buttons = document.querySelectorAll('.collapsible');
