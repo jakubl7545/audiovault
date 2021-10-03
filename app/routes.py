@@ -4,6 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from .forms import *
 from .models import Users, Content, Featured, News
 from .description_generator import get_description
+from app.email import send_password_reset_email
 from datetime import datetime
 from os import remove as rm, replace
 
@@ -56,6 +57,32 @@ def change():
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('change.html', form=form)
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	form = ResetPasswordRequestForm()
+	if form.validate_on_submit():
+		user = Users.query.filter_by(email=form.email.data).first()
+		if user:
+			send_password_reset_email(user)
+		return redirect(url_for('index'))
+	return render_template('reset_password.html', form=form, title='Reset password request')
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	user = Users.verify_reset_password_token(token)
+	if not user:
+		return redirect(url_for('index'))
+	form = ResetPasswordForm()
+	if form.validate_on_submit():
+		user.set_password(form.password.data)
+		db.session.commit()
+		return redirect(url_for('login'))
+	return render_template('reset_password.html', form=form, title='Reset password')
 
 @app.route('/contact')
 def contact():

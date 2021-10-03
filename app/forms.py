@@ -65,6 +65,15 @@ class ChangeForm(Form):
 		if not user.check_password(current_password.data):
 			raise ValidationError('Your current password is invalid')
 
+class ResetPasswordRequestForm(Form):
+	email = StringField('email', validators=[DataRequired(), Email()])
+	submit = SubmitField('Request password reset')
+
+class ResetPasswordForm(Form):
+	password = PasswordField('New password', [DataRequired()])
+	confirm_password = PasswordField('Confirm new password', [EqualTo('password'), DataRequired()])
+	submit = SubmitField('Set new password')
+
 class EditForm(Form):
 	title = StringField('Title', [DataRequired()])
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])

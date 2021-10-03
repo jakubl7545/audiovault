@@ -8,3 +8,5 @@ flask-login
 imdbpy
 pytest
 flask-bcrypt
+flask-mail
+pyjwt
