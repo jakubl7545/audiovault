@@ -15,7 +15,7 @@
 		<h2>Featured</h2>
 		{%for item in featured%}
 			<button class="collapsible" aria-expanded="false">{{item.title}}</button>
-			<div class="content" style="display:none">
+			<div class="content" id="featured" style="display:none">
 				<p>{{item.description}}</p>
 				<a href="{{url_for('download', id=item.id)}}">Download</a>
 				{% if current_user.is_admin == 1 %}
@@ -29,12 +29,15 @@
 			<a href="{{url_for('news')}}">Add news</a>
 		{% endif %}
 		{% for info in news %}
-			<h3>{{info.created_at}}</h3>
-		<p>{{info.content}}</p>
-		{% if current_user.is_admin == 1 %}
-			<a href="{{url_for('modify', id=info.id)}}">Modify news</a>
-		{% endif %}
-		{% endfor %}
+			<div id="news">
+				<h3>{{info.created_at}}</h3>
+			<p>{{info.content}}</p>
+			{% if current_user.is_admin == 1 %}
+				<a href="{{url_for('modify', id=info.id)}}">Modify news</a>
+				<button class="removeButton" id="{{info.id}}">Remove news</button>
+			{% endif %}
+			</div>
+				{% endfor %}
 		<hr>
 		<h2>Recent shows</h2>
 		{% with entries=shows %}
@@ -52,7 +55,7 @@
 	</div>
 	<script src="{{url_for('static', filename='toggleFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='addToFeatured.js')}}"></script>
-	<script src="{{url_for('static', filename='removeFromFeatured.js')}}"></script>
+	<script src="{{url_for('static', filename='remove.js')}}"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </body>
 </html>

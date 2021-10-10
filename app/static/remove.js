@@ -1,5 +1,6 @@
 function remove() {
-	$.post('/remove', {'id': this.id
+	var type = this.parentElement.id
+	$.post('/remove', {'id': this.id, 'type': type
 	}).done(function() {
 		location.reload(true)
 	}).fail(function() {});

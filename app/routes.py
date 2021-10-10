@@ -209,7 +209,10 @@ def add():
 def remove():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	removed_item = Featured.query.filter_by(content_id=request.form['id']).first()
+	if request.form['type'] == 'featured':
+		removed_item = Featured.query.filter_by(content_id=request.form['id']).first()
+	elif request.form['type'] == 'news':
+		removed_item = News.query.filter_by(id=request.form['id']).first()
 	db.session.delete(removed_item)
 	db.session.commit()
 	return ''
