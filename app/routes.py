@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from .forms import *
 from .models import Users, Content, Featured, News
 from .description_generator import get_description
-from app.email import send_password_reset_email
+from app.email_generator import send_password_reset_email
 from datetime import datetime
 from os import remove as rm, replace
 
