@@ -10,3 +10,4 @@ pytest
 flask-bcrypt
 flask-mail
 pyjwt
+requests

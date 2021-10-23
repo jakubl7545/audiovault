@@ -7,6 +7,7 @@ from .description_generator import get_description
 from app.email_generator import send_password_reset_email
 from datetime import datetime
 from os import remove as rm, replace
+import requests
 
 login.login_view = 'login'
 
@@ -142,6 +143,8 @@ def upload():
 		content = Content(title=form.name.data, type=form.type.data, description=form.description.data, file_path=file_path)
 		db.session.add(content)
 		db.session.commit()
+		data = {'content': f'New item uploaded: {form.type.data} - {form.name.data}', 'username': 'AudioVault Notification Bot'}
+		result = requests.post(app.config['DISCORD_URL'], json=data)
 		return redirect(url_for('index'))
 	return render_template('upload.html', form=form)
 
