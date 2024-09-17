@@ -143,8 +143,8 @@ def upload():
 		content = Content(title=form.name.data, type=form.type.data, description=form.description.data, file_path=file_path)
 		db.session.add(content)
 		db.session.commit()
-		data = {'content': f'New item uploaded: {form.type.data} - {form.name.data}', 'username': 'AudioVault Notification Bot'}
-		result = requests.post(app.config['DISCORD_URL'], json=data)
+		#data = {'content': f'New item uploaded: {form.type.data} - {form.name.data}', 'username': 'AudioVault Notification Bot'}
+		#result = requests.post(app.config['DISCORD_URL'], json=data)
 		return redirect(url_for('index'))
 	return render_template('upload.html', form=form)
 
