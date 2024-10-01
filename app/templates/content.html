@@ -25,7 +25,7 @@
 		{% with entries=entries.items %}
 			{% include 'render_content.html' %}
 		{% endwith %}
-		{% if entries.pages > 2 %}
+		{% if entries.pages >= 2 %}
 		<div role="navigation">
 		{% for page in entries.iter_pages(left_edge=config.PAGINATION_EDGE, left_current=config.PAGINATION_CURRENT,
 		right_current=config.PAGINATION_CURRENT, right_edge=config.PAGINATION_EDGE) %}
