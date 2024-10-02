@@ -1,16 +1,37 @@
+import sqlalchemy as sa
+import sqlalchemy.orm as so
 from app import app, db, login, bcrypt
 from flask_login import UserMixin
 import jwt
 from time import time
+from datetime import date, datetime, timezone
 
 class Content(db.Model):
-	__table__ = db.Model.metadata.tables['content']
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	title: so.Mapped[str] = so.mapped_column(sa.String(100))
+	type: so.Mapped[str] = so.mapped_column(sa.String(10))
+	description: so.Mapped[str] = so.mapped_column(sa.Text)
+	created_at: so.Mapped[date] = so.mapped_column(default=lambda: date.today())
+	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
+	downloaded: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
+	failed: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+	file_path: so.Mapped[str] = so.mapped_column(sa.String(100))
+
+	featured: so.WriteOnlyMapped['Featured'] = so.relationship(back_populates='content', passive_deletes=True)
 
 class Featured(db.Model):
-	__table__ = db.Model.metadata.tables['featured']
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	content_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Content.id))
+
+	content: so.Mapped[Content] = so.relationship(back_populates='featured')
 
 class Users(UserMixin, db.Model):
-	__table__ = db.Model.metadata.tables['users']
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	name: so.Mapped[str] = so.mapped_column(sa.String(50))
+	email: so.Mapped[str] = so.mapped_column(sa.String(50))
+	password: so.Mapped[str] = so.mapped_column(sa.String(255))
+	is_admin: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+
 	def get_id(self):
 		return self.id
 
@@ -38,4 +59,6 @@ def load_user(id):
 	return Users.query.get(int(id))
 
 class News(db.Model):
-	__table__ = db.Model.metadata.tables['news']
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	content: so.Mapped[str] = so.mapped_column(sa.Text)
+	created_at: so.Mapped[date] = so.mapped_column(default=lambda: date.today())

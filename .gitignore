@@ -3,3 +3,4 @@ instance/
 app/__pycache__/
 .idea/
 backup/
+migrations/
