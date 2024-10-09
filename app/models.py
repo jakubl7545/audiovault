@@ -17,11 +17,11 @@ class Content(db.Model):
 	failed: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
 	file_path: so.Mapped[str] = so.mapped_column(sa.String(100))
 
-	featured: so.WriteOnlyMapped['Featured'] = so.relationship(back_populates='content', passive_deletes=True)
+	featured: so.Mapped['Featured'] = so.relationship(back_populates='content', uselist=False, passive_deletes=True)
 
 class Featured(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
-	content_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Content.id))
+	content_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Content.id), unique=True)
 
 	content: so.Mapped[Content] = so.relationship(back_populates='featured')
 

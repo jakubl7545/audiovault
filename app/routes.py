@@ -200,7 +200,7 @@ def add():
 		if Featured.query.count() == app.config['NUMBER_OF_FEATURED']:
 			deleted_item = Featured.query.order_by(Featured.id).first()
 			db.session.delete(deleted_item)
-		featured = Featured(content_id=request.form['id'])
+		featured = Featured(content=db.session.get(Content, request.form['id']))
 		db.session.add(featured)
 		db.session.commit()
 		message = 'Added to featured'
