@@ -13,19 +13,19 @@ login.login_view = 'login'
 
 @app.route('/')
 def index():
-	featured = Content.query.join(Featured).with_entities(Content.id, Content.title, Content.description).order_by(Featured.id).all()
-	news = News.query.order_by(News.id.desc())
-	recent_shows = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		downloaded=1).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
-	recent_movies = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		downloaded=1).filter_by(type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED'])
+	featured = db.session.scalars(db.select(Featured).order_by(Featured.id))
+	news = db.session.scalars(db.select(News).order_by(News.id.desc()))
+	recent_shows = db.session.execute(db.select(Content.id, Content.title, Content.description).filter_by(
+		downloaded=1).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
+	recent_movies = db.session.execute(db.select(Content.id, Content.title, Content.description).filter_by(
+		downloaded=1).filter_by(type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
 	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies, news=news)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	form = LoginForm()
 	if form.validate_on_submit():
-		user = Users.query.filter_by(email=form.email.data).first()
+		user = db.session.scalar(db.select(Users).filter_by(email=form.email.data))
 		login_user(user, remember=form.rememberMe.data)
 		return redirect(url_for('index'))
 	return render_template('login.html', form=form)
@@ -53,8 +53,7 @@ def change():
 	if form.validate_on_submit():
 		user = Users(id=current_user.id)
 		user.set_password(form.new_password.data)
-		Users.query.filter_by(id=current_user.id).update(
-			{Users.password: user.password})
+		db.session.execute(db.update(Users), [{'id': user.id, 'password': user.password}])
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('change.html', form=form)
@@ -65,7 +64,7 @@ def reset_password_request():
 		return redirect(url_for('index'))
 	form = ResetPasswordRequestForm()
 	if form.validate_on_submit():
-		user = Users.query.filter_by(email=form.email.data).first()
+		user = db.session.scalar(db.select(Users).filter_by(email=form.email.data))
 		if user:
 			send_password_reset_email(user)
 		return redirect(url_for('index'))
@@ -95,36 +94,38 @@ def content(content_type):
 	search_form = SearchForm(request.args)
 	page=request.args.get('page', 1, type=int)
 	if content_type == 'downloaded':
-		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-			downloaded=1).order_by(Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+		entries = db.paginate(db.select(Content).filter_by(downloaded=1).order_by(
+			Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 		if 'date' in request.args:
-			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-				downloaded=1).filter(Content.created_at >= request.args.get('date')).order_by(
-				Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter(
+				Content.created_at >= request.args.get('date')).order_by(Content.title),
+				page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 		elif 'search' in request.args:
-			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-				downloaded=1).filter(Content.title.like("%" + request.args.get('search') + "%")).order_by(
-				Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter(
+				Content.title.like("%" + request.args.get('search') + "%")).order_by(
+				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 	elif content_type == 'failed':
-		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-			failed=1).order_by(Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+		entries = db.paginate(db.select(Content).filter_by(failed=1).order_by(
+			Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 		if 'date' in request.args:
-			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-				failed=1).filter(Content.created_at >= request.args.get('date')).order_by(
-				Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+			entries = db.paginate(db.select(Content).filter_by(failed=1).filter(
+				Content.created_at >= request.args.get('date')).order_by(Content.title),
+				page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 		elif 'search' in request.args:
-			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-				failed=1).filter(Content.title.like("%" + request.args.get('search') + "%")).order_by(
-				Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+			entries = db.paginate(db.select(Content).filter_by(failed=1).filter(
+				Content.title.like("%" + request.args.get('search') + "%")).order_by(
+				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 	else:
-		entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-		downloaded=1).filter_by(type=content_type[:-1]).order_by(Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+		entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter_by(type=content_type[:-1]
+			).order_by(Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 		if 'date' in request.args:
-			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-			downloaded=1).filter_by(type=content_type[:-1]).filter(Content.created_at>=request.args.get('date')).order_by(Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter_by(
+				type=content_type[:-1]).filter(Content.created_at>=request.args.get('date')).order_by(
+				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 		elif 'search' in request.args:
-			entries = Content.query.with_entities(Content.id, Content.title, Content.description).filter_by(
-			downloaded=1).filter_by(type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(Content.title).paginate(page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter_by(
+				type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(
+				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
 	return render_template('content.html', content_type=content_type, entries=entries, search_by_date_form=search_by_date_form, search_form=search_form)
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -156,7 +157,7 @@ def generate():
 @app.route('/download/<id>')
 @login_required
 def download(id):
-	file_path = Content.query.with_entities(Content.file_path).filter_by(id=id).first()[0]
+	file_path = db.session.scalar(db.select(Content.file_path).filter_by(id=id))
 	return send_file(file_path, as_attachment=True)
 
 @app.route('/delete/<id>', methods=['GET', 'POST'])
@@ -164,9 +165,9 @@ def delete(id):
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	form = DeleteForm()
-	name = Content.query.with_entities(Content.title).filter_by(id=id).first()[0]
+	name = db.session.scalar(db.select(Content.title).filter_by(id=id))
 	if form.yes.data:
-		deleted_item = Content.query.filter_by(id=id).first()
+		deleted_item = db.session.get(Content, id)
 		db.session.delete(deleted_item)
 		db.session.commit()
 		if deleted_item.file_path is not None:
@@ -180,14 +181,14 @@ def delete(id):
 def edit(id):
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	item = Content.query.with_entities(Content.title, Content.type, Content.description, Content.file_path).filter_by(id=id).first()
+	item = db.session.get(Content, id)
 	form = EditForm(obj=item)
 	if form.validate_on_submit():
 		if item.file_path != form.file_path.data:
 			replace(item.file_path, form.file_path.data)
-		Content.query.filter_by(id=id).update(
-		{Content.title: form.title.data, Content.type: form.type.data, Content.description: form.description.data,
-		Content.file_path: form.file_path.data, Content.updated_at: datetime.utcnow()})
+		db.session.execute(db.update(Content), [{'id': id,
+			'title': form.title.data, 'type': form.type.data, 'description': form.description.data,
+			'file_path': form.file_path.data, 'updated_at': datetime.utcnow()}])
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)
@@ -213,9 +214,9 @@ def remove():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	if request.form['type'] == 'featured':
-		removed_item = Featured.query.filter_by(content_id=request.form['id']).first()
+		removed_item = db.session.get(Featured, request.form['id'])
 	elif request.form['type'] == 'news':
-		removed_item = News.query.filter_by(id=request.form['id']).first()
+		removed_item = db.session.get(News, request.form['id'])
 	db.session.delete(removed_item)
 	db.session.commit()
 	return ''
@@ -234,10 +235,10 @@ def news():
 def modify(id):
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	item = News.query.filter_by(id=id).first()
+	item = db.session.get(News, id)
 	form = ModifyForm(obj=item)
 	if form.validate_on_submit():
-		News.query.filter_by(id=id).update({News.content: form.content.data})
+		db.session.execute(db.update(News), [{'id': id, 'content': form.content.data}])
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)

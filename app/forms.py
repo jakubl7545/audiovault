@@ -14,8 +14,8 @@ class UploadForm(Form):
 	submit = SubmitField('Upload')
 
 	def validate_name(self, name):
-		content = Content.query.with_entities(Content.title).filter_by(title=name.data).first()
-		if content is not None:
+		title = db.session.scalar(db.select(Content.title).filter_by(title=name.data))
+		if title is not None:
 			raise ValidationError('This item is already uploaded')
 
 class LoginForm(Form):
@@ -25,12 +25,12 @@ class LoginForm(Form):
 	submit = SubmitField('Log in')
 
 	def validate_email(self, email):
-		user = Users.query.filter_by(email=email.data).first()
+		user = db.session.scalar(db.select(Users).filter_by(email=email.data))
 		if user is None:
 			raise ValidationError('Your email is invalid')
 
 	def validate_password(self, password):
-		user = Users.query.filter_by(email=self.email.data).first()
+		user = db.session.scalar(db.select(Users).filter_by(email=self.email.data))
 		if user is None:
 			raise StopValidation()
 		elif not user.check_password(password.data):
@@ -44,12 +44,12 @@ class RegisterForm(Form):
 	submit = SubmitField('Register')
 
 	def validate_name(self, name):
-		user = Users.query.with_entities(Users.name).filter_by(name=name.data).first()
+		user = db.session.scalar(db.select(Users).filter_by(name=name.data))
 		if user is not None:
 			raise ValidationError('Please use a different username')
 
 	def validate_email(self, email):
-		user = Users.query.with_entities(Users.email).filter_by(email=email.data).first()
+		user = db.session.scalar(db.select(Users).filter_by(email=email.data))
 		if user is not None:
 			raise ValidationError('Please use a different e-mail address')
 
@@ -60,7 +60,7 @@ class ChangeForm(Form):
 	submit = SubmitField('Change password')
 
 	def validate_current_password(self, current_password):
-		user = Users.query.filter_by(id=current_user.id).first()
+		user = db.session.get(Users, current_user.id)
 		if not user.check_password(current_password.data):
 			raise ValidationError('Your current password is invalid')
 

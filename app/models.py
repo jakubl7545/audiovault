@@ -52,11 +52,11 @@ class Users(UserMixin, db.Model):
 			id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
 		except:
 			return
-		return Users.query.get(id)
+		return db.session.get(Users, id)
 
 @login.user_loader
 def load_user(id):
-	return Users.query.get(int(id))
+	return db.session.get(Users, int(id))
 
 class News(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
