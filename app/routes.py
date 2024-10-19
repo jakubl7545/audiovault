@@ -198,9 +198,6 @@ def add():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	try:
-		if Featured.query.count() == app.config['NUMBER_OF_FEATURED']:
-			deleted_item = Featured.query.order_by(Featured.id).first()
-			db.session.delete(deleted_item)
 		featured = Featured(content=db.session.get(Content, request.form['id']))
 		db.session.add(featured)
 		db.session.commit()
@@ -218,6 +215,14 @@ def remove():
 	elif request.form['type'] == 'news':
 		removed_item = db.session.get(News, request.form['id'])
 	db.session.delete(removed_item)
+	db.session.commit()
+	return ''
+
+@app.route('/clear', methods=['POST'])
+def clear():
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
+	db.session.execute(db.delete(Featured))
 	db.session.commit()
 	return ''
 

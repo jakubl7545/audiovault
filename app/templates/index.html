@@ -23,6 +23,9 @@
 				{% endif %}
 			</div>
 		{%endfor%}
+		{% if current_user.is_admin == 1 %}
+			<button id="clear_featured">Clear featured</button>
+		{% endif %}
 		<hr>
 		<h2>News</h2>
 		{% if current_user.is_admin == 1 %}
@@ -56,6 +59,7 @@
 	<script src="{{url_for('static', filename='toggleFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='addToFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='remove.js')}}"></script>
+	<script src="{{url_for('static', filename='clear_featured.js')}}"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </body>
 </html>
