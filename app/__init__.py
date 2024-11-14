@@ -5,10 +5,10 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
+from config import Config
 
-app = Flask(__name__, instance_relative_config=True)
-app.config.from_object('config')
-app.config.from_pyfile('config.py')
+app = Flask(__name__)
+app.config.from_object(Config)
 Bootstrap(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
