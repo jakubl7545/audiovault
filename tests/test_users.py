@@ -4,9 +4,10 @@ import unittest
 from flask import current_app
 from app import app, db
 from app.models import Users
+from flask_login import current_user
 
 
-class TestAudiovault(unittest.TestCase):
+class TestUsers(unittest.TestCase):
 	def setUp(self):
 		self.app = app
 		self.app.config['WTF_CSRF_ENABLED'] = False
@@ -58,11 +59,13 @@ class TestAudiovault(unittest.TestCase):
 		assert 'name="submit"' in html
 
 	def test_register_user(self):
-		response = self.client.post('/register', data = {
-			'name': 'jakub', 'email': 'jakub@mail.com', 'password': 'Password123!', 'confirmPassword': 'Password123!'
-		}, follow_redirects=True)
-		assert response.status_code == 200
-		assert response.request.path == '/'
+		with self.client:
+			response = self.client.post('/register', data = {
+				'name': 'jakub', 'email': 'jakub@mail.com', 'password': 'Password123!', 'confirmPassword': 'Password123!'
+			}, follow_redirects=True)
+			assert response.status_code == 200
+			assert response.request.path == '/'
+			assert current_user.name == 'jakub'
 
 	def test_register_user_with_passwords_not_matching(self):
 		response = self.client.post('/register', data={
@@ -96,11 +99,13 @@ class TestAudiovault(unittest.TestCase):
 		assert 'name="submit"' in html
 
 	def test_login_user(self):
-		response = self.client.post('/login', data = {
-			'email': 'user1@mail.com', 'password': 'Password1'
-		}, follow_redirects=True)
-		assert response.status_code == 200
-		assert response.request.path == '/'
+		with self.client:
+			response = self.client.post('/login', data = {
+				'email': 'user1@mail.com', 'password': 'Password1'
+			}, follow_redirects=True)
+			assert response.status_code == 200
+			assert response.request.path == '/'
+			assert current_user.name == 'user1'
 
 	def test_validate_user_email_when_loging(self):
 		response = self.client.post('/login', data = {
@@ -117,22 +122,26 @@ class TestAudiovault(unittest.TestCase):
 		assert 'Your password is invalid' in html
 
 	def test_logout_user(self):
-		response = self.client.post('/login', data = {
-			'email': 'user1@mail.com', 'password': 'Password1'
-		}, follow_redirects=True)
-		response = self.client.get('/logout', follow_redirects=True)
-		html = response.get_data(as_text=True)
-		assert response.status_code == 200
-		assert response.request.path == '/'
-		assert 'Log in' in html
+		with self.client:
+			response = self.client.post('/login', data = {
+				'email': 'user1@mail.com', 'password': 'Password1'
+			}, follow_redirects=True)
+			response = self.client.get('/logout', follow_redirects=True)
+			html = response.get_data(as_text=True)
+			assert response.status_code == 200
+			assert response.request.path == '/'
+			assert 'Log in' in html
+			assert current_user.is_anonymous == True
 
 	def test_user_authentication(self):
-		response = self.client.post('/login', data = {
-			'email': 'user1@mail.com', 'password': 'Password1'
-		}, follow_redirects=True)
-		html = response.get_data(as_text=True)
-		assert 'Log out' in html
-		assert 'Upload' not in html
+		with self.client:
+			response = self.client.post('/login', data = {
+				'email': 'user1@mail.com', 'password': 'Password1'
+			}, follow_redirects=True)
+			html = response.get_data(as_text=True)
+			assert 'Log out' in html
+			assert 'Upload' not in html
+			assert current_user.is_authenticated == True
 
 	def test_change_password_form(self):
 		response = self.client.get('/change')
