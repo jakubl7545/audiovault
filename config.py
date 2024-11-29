@@ -2,19 +2,19 @@ import os
 
 
 class Config:
-	RECENTLY_ADDED = os.environ.get('RECENTLY_ADDED') or 3
-	ITEMS_PER_PAGE = os.environ.get('ITEMS_PER_PAGE') or 3
-	PAGINATION_EDGE = os.environ.get('PAGINATION_EDGE') or 2
-	PAGINATION_CURRENT = os.environ.get('PAGINATION_CURRENT') or 2
+	RECENTLY_ADDED = int(os.environ.get('RECENTLY_ADDED') or 3)
+	ITEMS_PER_PAGE = int(os.environ.get('ITEMS_PER_PAGE') or 3)
+	PAGINATION_EDGE = int(os.environ.get('PAGINATION_EDGE') or 2)
+	PAGINATION_CURRENT = int(os.environ.get('PAGINATION_CURRENT') or 2)
 	PATH_FOR_SHOWS = os.environ.get('PATH_FOR_SHOWS') or "d:\\uploads\\shows\\"
 	PATH_FOR_MOVIES = os.environ.get('PATH_FOR_MOVIES') or "d:\\uploads\\movies\\"
-	MAX_CONTENT_LENGTH = os.environ.get('MAX_CONTENT_LENGTH') or 1024 ** 3 * 2
+	MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH') or 1024 ** 3 * 2)
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret_key'
 	SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or 'mariadb+mariadbconnector://root:Password123!@localhost/audiovault'
 	SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO') or True
 	SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS') or False
 	MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.googlemail.com'
-	MAIL_PORT = os.environ.get('MAIL_PORT') or 587
+	MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)
 	MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') or 1
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'audiovault'
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'Password123!'
