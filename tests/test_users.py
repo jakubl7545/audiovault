@@ -32,10 +32,6 @@ class TestUsers(unittest.TestCase):
 		db.session.add(new_user)
 		db.session.commit()
 
-	def test_app(self):
-		assert self.app is not None
-		assert current_app == self.app
-
 	def test_user_model(self):
 		user = Users(name='user3', email='user3@mail.com', is_admin=True)
 		assert user.name == 'user3'

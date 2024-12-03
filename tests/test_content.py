@@ -79,6 +79,12 @@ class TestContent(unittest.TestCase):
 		assert 'name="file"' in html
 		assert 'name="submit"' in html
 
+	def test_upload_unauthorized_access(self):
+		response = self.client.get('/logout', follow_redirects=True)
+		response = self.client.get('/upload')
+		html = response.get_data(as_text=True)
+		assert 'not authorized' in html
+
 	def test_upload(self):
 		response = self.client.post('/upload', data = {
 			'name': 'Movie3', 'type': 'movie', 'description': 'Movie3 description',
@@ -122,6 +128,12 @@ class TestContent(unittest.TestCase):
 		assert 'name="submit"' in html
 		assert 'value="Series2"' in html
 
+	def test_edit_unauthorized_access(self):
+		response = self.client.get('/logout', follow_redirects=True)
+		response = self.client.get('/edit/1')
+		html = response.get_data(as_text=True)
+		assert 'not authorized' in html
+
 	def test_edit(self):
 		self.create_entries()
 		response = self.client.post('/edit/1', data = {
@@ -140,6 +152,12 @@ class TestContent(unittest.TestCase):
 		assert 'name="yes"' in html
 		assert 'name="no"' in html
 		assert 'Movie1' in html
+
+	def test_delete_unauthorized_access(self):
+		response = self.client.get('/logout', follow_redirects=True)
+		response = self.client.get('/delete/3')
+		html = response.get_data(as_text=True)
+		assert 'not authorized' in html
 
 	def test_delete_canceled(self):
 		self.create_entries()
