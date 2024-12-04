@@ -87,8 +87,7 @@ class TestContent(unittest.TestCase):
 
 	def test_upload(self):
 		response = self.client.post('/upload', data = {
-			'name': 'Movie3', 'type': 'movie', 'description': 'Movie3 description',
-			'file': (io.BytesIO(b'testfile'), 'movie3.mp3'), 'submit': True
+			'name': 'Movie3', 'type': 'movie', 'description': 'Movie3 description', 'file': (io.BytesIO(b'testfile'), 'movie3.mp3')
 		}, follow_redirects=True, content_type='multipart/form-data')
 		html = response.get_data(as_text=True)
 		assert response.status_code == 200
@@ -97,8 +96,7 @@ class TestContent(unittest.TestCase):
 
 	def test_validate_file_ext_when_uploading(self):
 		response = self.client.post('/upload', data={
-			'name': 'Movie4', 'type': 'movie', 'description': 'Movie4 description',
-			'file': (io.BytesIO(b'testfile'), 'movie4.avi'), 'submit': True
+			'name': 'Movie4', 'type': 'movie', 'description': 'Movie4 description', 'file': (io.BytesIO(b'testfile'), 'movie4.avi')
 		}, follow_redirects=True, content_type='multipart/form-data')
 		html = response.get_data(as_text=True)
 		assert 'File does not have an approved extension: mp3, zip' in html
@@ -106,8 +104,7 @@ class TestContent(unittest.TestCase):
 	def test_validate_name_when_uploading(self):
 		self.create_entries()
 		response = self.client.post('/upload', data = {
-			'name': 'Series2', 'type': 'show', 'description': 'Series2 description',
-			'file': (io.BytesIO(b'testfile'), 'series2.zip'), 'submit': True
+			'name': 'Series2', 'type': 'show', 'description': 'Series2 description', 'file': (io.BytesIO(b'testfile'), 'series2.zip')
 		}, follow_redirects=True, content_type='multipart/form-data')
 		html = response.get_data(as_text=True)
 		assert 'This item is already uploaded' in html
@@ -169,8 +166,7 @@ class TestContent(unittest.TestCase):
 
 	def test_delete(self):
 		response = self.client.post('/upload', data={
-			'name': 'Movie5', 'type': 'movie', 'description': 'Movie5 description',
-			'file': (io.BytesIO(b'testfile'), 'movie5.mp3'), 'submit': True
+			'name': 'Movie5', 'type': 'movie', 'description': 'Movie5 description', 'file': (io.BytesIO(b'testfile'), 'movie5.mp3')
 		}, follow_redirects=True, content_type='multipart/form-data')
 		response = self.client.post('/delete/1', data={'yes': True}, follow_redirects=True)
 		assert response.status_code == 200
@@ -180,8 +176,7 @@ class TestContent(unittest.TestCase):
 
 	def test_download(self):
 		response = self.client.post('/upload', data={
-			'name': 'Movie6', 'type': 'movie', 'description': 'Movie6 description',
-			'file': (io.BytesIO(b'testfile'), 'movie6.mp3'), 'submit': True
+			'name': 'Movie6', 'type': 'movie', 'description': 'Movie6 description', 'file': (io.BytesIO(b'testfile'), 'movie6.mp3')
 		}, follow_redirects=True, content_type='multipart/form-data')
 		response = self.client.get('/download/1')
 		assert response.status_code == 200

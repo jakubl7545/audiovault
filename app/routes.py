@@ -133,14 +133,13 @@ def upload():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	form = UploadForm()
-	if form.submit.data and form.validate_on_submit():
+	if form.validate_on_submit():
 		uploaded_file = request.files['file']
 		if form.type.data == 'movie':
 			file_path = ''.join((app.config['PATH_FOR_MOVIES'], uploaded_file.filename))
-			uploaded_file.save(file_path)
 		elif form.type.data == 'show':
 			file_path = ''.join((app.config['PATH_FOR_SHOWS'], uploaded_file.filename))
-			uploaded_file.save(file_path)
+		uploaded_file.save(file_path)
 		content = Content(title=form.name.data, type=form.type.data, description=form.description.data, file_path=file_path)
 		db.session.add(content)
 		db.session.commit()
