@@ -87,6 +87,11 @@ class TestMiscellaneous(unittest.TestCase):
 		assert 'New info' in html
 		assert f'{date.today()}' in html
 
+	def test_add_news_unauthorized_access(self):
+		response = self.client.get('/news')
+		html = response.get_data(as_text=True)
+		assert 'not authorized' in html
+
 	def test_modify_news_form(self):
 		self.login_user()
 		response = self.client.post('/news', data={'content': 'New info'}, follow_redirects=True)

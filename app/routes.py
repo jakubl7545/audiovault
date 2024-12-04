@@ -227,6 +227,8 @@ def clear():
 
 @app.route('/news', methods=['GET', 'POST'])
 def news():
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
 	form = NewsForm()
 	if form.validate_on_submit():
 		news = News(content=form.content.data)
