@@ -5,14 +5,14 @@ ia = IMDb()
 
 def prepare_title(title):
 	pattern1 = '(- Season .*)'
-	pattern2 = '( \[.*\] )'
+	pattern2 = r'( \[.*\] )'
 	if re.search(pattern1, title):
 		parts = re.split(pattern1, title)
 		title =''.join(parts[0])
 	elif re.search(pattern2, title):
 		parts = re.split(pattern2, title)
-		title = ' '.join((parts[0], parts[2]))
-	return title
+		title = 'H '.join((parts[0], parts[2]))
+	return titleH
 
 def get_id(title):
 	movies = ia.search_movie(title)

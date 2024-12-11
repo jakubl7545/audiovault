@@ -5,7 +5,7 @@ from .forms import *
 from .models import Users, Content, Featured, News
 from .description_generator import get_description
 from app.email_generator import send_password_reset_email
-from datetime import datetime
+from datetime import datetime, timezone
 from os import remove as rm, replace
 import requests
 
@@ -187,7 +187,7 @@ def edit(id):
 			replace(item.file_path, form.file_path.data)
 		db.session.execute(db.update(Content), [{'id': id,
 			'title': form.title.data, 'type': form.type.data, 'description': form.description.data,
-			'file_path': form.file_path.data, 'updated_at': datetime.utcnow()}])
+			'file_path': form.file_path.data, 'updated_at': datetime.now(timezone.utc)}])
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)

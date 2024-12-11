@@ -56,7 +56,7 @@ class TestContent(unittest.TestCase):
 		assert content.description == 'Series3 description'
 		assert content.file_path == '/audiovault/series3.mp3'
 		assert content.created_at == date.today()
-		assert content.updated_at == datetime.now(timezone.utc)
+		assert content.updated_at <= datetime.now(timezone.utc)
 		assert content.downloaded == True
 		assert content.failed == False
 
