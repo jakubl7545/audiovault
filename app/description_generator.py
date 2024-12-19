@@ -11,8 +11,8 @@ def prepare_title(title):
 		title =''.join(parts[0])
 	elif re.search(pattern2, title):
 		parts = re.split(pattern2, title)
-		title = 'H '.join((parts[0], parts[2]))
-	return titleH
+		title = ' '.join((parts[0], parts[2]))
+	return title
 
 def get_id(title):
 	movies = ia.search_movie(title)
