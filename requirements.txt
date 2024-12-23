@@ -4,7 +4,7 @@ flask-bootstrap
 email-validator
 flask-sqlalchemy
 flask-migrate
-#mariadb
+mariadb
 flask-login
 imdbpy
 pytest
