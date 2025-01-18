@@ -1,0 +1,25 @@
+services:
+  db:
+    image: mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=Password123!
+      - MARIADB_DATABASE=audiovault
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - db-data:/var/lib/mysql:Z
+  app:
+    image: audiovault:0.1.5
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mariadb+mariadbconnector://root:Password123!@db/audiovault
+volumes:
+  db-data:
