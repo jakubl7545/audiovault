@@ -6,8 +6,9 @@ from .models import Users, Content, Featured, News
 from .description_generator import get_description
 from app.email_generator import send_password_reset_email
 from datetime import datetime, timezone
-from os import remove as rm, replace
+from os import remove as rm
 import requests
+from shutil import move
 
 login.login_view = 'login'
 
@@ -184,7 +185,7 @@ def edit(id):
 	form = EditForm(obj=item)
 	if form.validate_on_submit():
 		if item.file_path != form.file_path.data:
-			replace(item.file_path, form.file_path.data)
+			move(item.file_path, form.file_path.data)
 		db.session.execute(db.update(Content), [{'id': id,
 			'title': form.title.data, 'type': form.type.data, 'description': form.description.data,
 			'file_path': form.file_path.data, 'updated_at': datetime.now(timezone.utc)}])
