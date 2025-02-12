@@ -12,6 +12,9 @@ jobs:
   test_app:
     runs-on: ubuntu-24.04
     steps:
+      - name: install necessary dependencies
+        run: |
+          apt-get update && apt-get upgrade -y && apt-get install -y libmariadb-dev gcc
       - name: checkout code
         uses: actions/checkout@v4
       - name: set up python
