@@ -30,7 +30,7 @@ jobs:
       - name: run tests
         run: |
           source venv/bin/activate
-          sudo pytest tests/test_content.py
+          sudo venv/bin/python -m pytest tests/test_content.py
           pytest tests/test_miscellaneous.py
           pytest tests/test_users.py
 
