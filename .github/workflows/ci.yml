@@ -28,7 +28,7 @@ jobs:
           pip install -r requirements.txt
       - name: run tests
         run: |
-          sudo python -m pytest tests/test_content.py
+          sudo pytest tests/test_content.py
           python -m pytest tests/test_miscellaneous.py
           python -m pytest tests/test_users.py
 
