@@ -29,9 +29,10 @@ jobs:
           venv/bin/pip install -r requirements.txt
       - name: run tests
         run: |
-          venv/bin/python -m pytest tests/test_content.py
-          venv/bin/python -m pytest tests/test_miscellaneous.py
-          venv/bin/python -m pytest tests/test_users.py
+          source venv/bin/activate
+          sudo pytest tests/test_content.py
+          pytest tests/test_miscellaneous.py
+          pytest tests/test_users.py
 
   build_and_push_docker_image:
     needs: test_app
