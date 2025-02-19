@@ -30,11 +30,19 @@ jobs:
           python -m venv venv
           venv/bin/python -m pip install --upgrade pip
           venv/bin/pip install -r requirements.txt
+          venv/bin/python -m pip install bandit
       - name: run tests
         run: |
           sudo venv/bin/python -m pytest tests/test_content.py
           venv/bin/python -m pytest tests/test_miscellaneous.py
           venv/bin/python -m pytest tests/test_users.py
+      - name: check app for vulnerabilities
+        run: |
+          venv/bin/python -m bandit -x ./venv,./tests -r .
+      - name: check dependencies for vulnerabilities
+        uses: pypa/gh-action-pip-audit@v1.1.0
+        with:
+          inputs: requirements.txt
 
   build_and_push_docker_image:
     needs: test_app
@@ -53,6 +61,13 @@ jobs:
       - name: build Docker image
         run: |
           docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ github.sha }} .
+      - name: scan Docker image for vulnerabilities
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: '${{ secrets.ECR_REPOSITORY_URI }}:${{ github.sha }}'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'MEDIUM,CRITICAL,HIGH'
       - name: push Docker image to ECR
         run: |
           docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ github.sha }}
