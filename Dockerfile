@@ -26,4 +26,5 @@ env PATH_FOR_SHOWS $HOME/shows/
 expose 5000
 run chown -R audiovault:audiovault .
 user audiovault
+run chmod 755 boot.sh
 cmd ["./boot.sh"]
