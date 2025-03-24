@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: audiovault-svc
+  namespace: audiovault
+spec:
+  type: ClusterIP
+  selector:
+    app: audiovault
+  ports:
+    - port: 80
+      targetPort: 5000

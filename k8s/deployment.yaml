@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audiovault-deploy
+  namespace: audiovault
+spec:
+  selector:
+    matchLabels:
+      app: audiovault
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: audiovault
+    spec:
+      containers:
+      - name: audiovault
+        image: 168361641029.dkr.ecr.eu-north-1.amazonaws.com/audiovault:ad05c086d72bd4810ef186501d648e1596ebcec7
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 100
+        env:
+          - name: SQLALCHEMY_DATABASE_URI
+            value: 'mariadb+mariadbconnector://root:Password123!@db/audiovault'
+        ports:
+          - containerPort: 5000
