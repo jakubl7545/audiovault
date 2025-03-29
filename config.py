@@ -10,7 +10,9 @@ class Config:
 	PATH_FOR_MOVIES = os.environ.get('PATH_FOR_MOVIES') or "d:\\uploads\\movies\\"
 	MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH') or 1024 ** 3 * 2)
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret_key'
-	SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or 'mariadb+mariadbconnector://root:Password123!@localhost/audiovault'
+	SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or \
+	f"mariadb+mariadbconnector://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@db/{os.environ.get('DB_NAME')}" or \
+	'mariadb+mariadbconnector://root:Password123!@localhost/audiovault'
 	SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO') or True
 	SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS') or False
 	MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.googlemail.com'

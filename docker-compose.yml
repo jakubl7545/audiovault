@@ -13,14 +13,16 @@ services:
     volumes:
       - db-data:/var/lib/mysql:Z
   app:
-    image: audiovault:0.1.6
+    image: audiovault:0.2.1
     ports:
       - "5000:5000"
     depends_on:
       db:
         condition: service_healthy
     environment:
-      - SQLALCHEMY_DATABASE_URI=mariadb+mariadbconnector://root:Password123!@db/audiovault
+      - DB_USER=root
+      - DB_PASSWORD=Password123!
+      - DB_NAME=audiovault
     volumes:
       - movies:/home/audiovault/movies
       - shows:/home/audiovault/shows
