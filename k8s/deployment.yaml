@@ -13,14 +13,28 @@ spec:
       labels:
         app: audiovault
     spec:
+      serviceAccountName: secrets-csi-sa
       containers:
       - name: audiovault
-        image: 168361641029.dkr.ecr.eu-north-1.amazonaws.com/audiovault:ad05c086d72bd4810ef186501d648e1596ebcec7
+        image: 168361641029.dkr.ecr.eu-north-1.amazonaws.com/audiovault:e22ca04a19bcaf737fb95e7ffddef8db310445a0
         securityContext:
           runAsNonRoot: true
           runAsUser: 100
-        env:
-          - name: SQLALCHEMY_DATABASE_URI
-            value: 'mariadb+mariadbconnector://root:Password123!@db/audiovault'
+        volumeMounts:
+        - name: secret-volume
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+        envFrom:
+        - configMapRef:
+            name: audiovault-config
+        - secretRef:
+            name: audiovault
         ports:
           - containerPort: 5000
+      volumes:
+      - name: secret-volume
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: aws-secret
