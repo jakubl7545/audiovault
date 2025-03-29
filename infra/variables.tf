@@ -15,3 +15,9 @@ variable "cluster_version" {
   type = string
   default = "1.32"
 }
+
+variable "namespace" {
+  description = "cluster namespace for application"
+  type = string
+  default = "audiovault"
+}

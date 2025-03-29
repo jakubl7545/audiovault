@@ -21,6 +21,12 @@ enable_cluster_creator_admin_permissions = true
   }
 }
 
+resource "kubernetes_namespace" "audiovault" {
+  metadata {
+    name = var.namespace
+  }
+}
+
 resource "null_resource" "update_kubeconfig" {
   depends_on = [module.eks]
   provisioner "local-exec" {

@@ -18,8 +18,8 @@ resource "aws_db_instance" "audiovault_rds" {
   instance_class = "db.t3.micro"
   allocated_storage = 10
   publicly_accessible = false
-  username = "root"
-password = "Password123!"
+  username = jsondecode(data.aws_secretsmanager_secret_version.current.secret_string)["db_user"]
+password = jsondecode(data.aws_secretsmanager_secret_version.current.secret_string)["db_password"]
   vpc_security_group_ids = [aws_security_group.audiovault_rds_sg.id]
   skip_final_snapshot = true
   db_subnet_group_name = module.vpc.database_subnet_group_name
