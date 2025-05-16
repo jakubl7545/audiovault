@@ -4,7 +4,7 @@ metadata:
   name: audiovault-svc
   namespace: audiovault
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: audiovault
   ports:
