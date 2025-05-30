@@ -5,8 +5,6 @@ function removeNews() {
 	}).fail(function() {});
 }
 
-var removeButtons = document.querySelectorAll('.removeNewsButton');
-var i;
-for (i=0; i<removeButtons.length; i++) {
-	removeButtons[i].addEventListener('click', removeNews);
+for (let removeButton of document.querySelectorAll('.removeNewsButton')) {
+	removeButton.addEventListener('click', removeNews);
 }

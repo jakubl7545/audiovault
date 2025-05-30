@@ -7,8 +7,6 @@ function addToFeatured() {
 	});
 }
 
-var addButtons = document.querySelectorAll('.addButton');
-var i;
-for (i=0; i<addButtons.length; i++) {
-	addButtons[i].addEventListener('click', addToFeatured);
+for (let addButton of document.querySelectorAll('.addButton')) {
+	addButton.addEventListener('click', addToFeatured);
 }

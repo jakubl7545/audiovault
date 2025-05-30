@@ -8,8 +8,7 @@ function toggleFeatured() {
 		content.style.display = "none";
 	}
 }
-var buttons = document.querySelectorAll('.collapsible');
-var i;
-for (i=0; i<buttons.length; i++) {
-	buttons[i].addEventListener('click', toggleFeatured);
+
+for (let button of document.querySelectorAll('.collapsible')) {
+	button.addEventListener('click', toggleFeatured);
 }
