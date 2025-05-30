@@ -14,16 +14,24 @@ spec:
         app: audiovault
     spec:
       serviceAccountName: secrets-csi-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 101
+        fsGroup: 101
       containers:
       - name: audiovault
-        image: 168361641029.dkr.ecr.eu-north-1.amazonaws.com/audiovault:e22ca04a19bcaf737fb95e7ffddef8db310445a0
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 100
+        image: 168361641029.dkr.ecr.eu-north-1.amazonaws.com/audiovault:c08380ed5c8475c4a32b5a110a4429ace7fbb208
         volumeMounts:
         - name: secret-volume
           mountPath: "/mnt/secrets-store"
           readOnly: true
+        - name: audiovault-volume
+          mountPath: /home/audiovault/movies
+          subPath: movies
+        - name: audiovault-volume
+          mountPath: /home/audiovault/shows
+          subPath: shows
         envFrom:
         - configMapRef:
             name: audiovault-config
@@ -65,3 +73,6 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: aws-secret
+      - name: audiovault-volume
+        persistentVolumeClaim:
+          claimName: audiovault-pv-claim
