@@ -206,14 +206,11 @@ def add_to_featured():
 		message = 'Already in featured'
 	return jsonify({'message': message})
 
-@app.route('/remove', methods=['POST'])
-def remove():
+@app.route('/remove_featured', methods=['POST'])
+def remove_featured():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	if request.form['type'] == 'featured':
-		removed_item = db.session.get(Featured, request.form['id'])
-	elif request.form['type'] == 'news':
-		removed_item = db.session.get(News, request.form['id'])
+	removed_item = db.session.get(Featured, request.form['id'])
 	db.session.delete(removed_item)
 	db.session.commit()
 	return ''
@@ -249,3 +246,12 @@ def modify_news(id):
 		db.session.commit()
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)
+
+@app.route('/remove_news', methods=['POST'])
+def remove_news():
+	if current_user.is_anonymous or not current_user.is_admin:
+		return '<h1>You are not authorized to view this content</h1>'
+	removed_item = db.session.get(News, request.form['id'])
+	db.session.delete(removed_item)
+	db.session.commit()
+	return ''

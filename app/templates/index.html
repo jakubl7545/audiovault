@@ -19,7 +19,7 @@
 				<p>{{item.content.description}}</p>
 				<a href="{{url_for('download', id=item.content.id)}}">Download</a>
 				{% if current_user.is_admin == 1 %}
-					<button class="removeButton" id="{{item.id}}">Remove from featured</button>
+					<button class="removeFeaturedButton" id="{{item.id}}">Remove from featured</button>
 				{% endif %}
 			</div>
 		{%endfor%}
@@ -37,7 +37,7 @@
 			<p>{{info.content}}</p>
 			{% if current_user.is_admin == 1 %}
 				<a href="{{url_for('modify_news', id=info.id)}}">Modify news</a>
-				<button class="removeButton" id="{{info.id}}">Remove news</button>
+				<button class="removeNewsButton" id="{{info.id}}">Remove news</button>
 			{% endif %}
 			</div>
 				{% endfor %}
@@ -58,7 +58,8 @@
 	</div>
 	<script src="{{url_for('static', filename='toggleFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='addToFeatured.js')}}"></script>
-	<script src="{{url_for('static', filename='remove.js')}}"></script>
+	<script src="{{url_for('static', filename='removeFeatured.js')}}"></script>
+	<script src="{{url_for('static', filename='removeNews.js')}}"></script>
 	<script src="{{url_for('static', filename='clear_featured.js')}}"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </body>

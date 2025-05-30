@@ -117,8 +117,8 @@ class TestMiscellaneous(unittest.TestCase):
 
 	def test_remove_news(self):
 		self.login_user()
-		response = self.client.post('/news', data={'content': 'New info'}, follow_redirects=True)
-		response = self.client.post('/remove', data={'id': 1, 'type': 'news'}, follow_redirects=True)
+		response = self.client.post('/add_news', data={'content': 'New info'}, follow_redirects=True)
+		response = self.client.post('/remove_news', data={'id': 1, 'type': 'news'}, follow_redirects=True)
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
 		assert 'New info' not in html
