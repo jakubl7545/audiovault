@@ -53,7 +53,7 @@ class RegisterForm(Form):
 		if user is not None:
 			raise ValidationError('Please use a different e-mail address')
 
-class ChangeForm(Form):
+class ChangePasswordForm(Form):
 	current_password = PasswordField('Current password', [DataRequired()])
 	new_password = PasswordField('New password', [DataRequired()])
 	confirm_password = PasswordField('Confirm new password', [EqualTo('new_password'), DataRequired()])
@@ -86,7 +86,7 @@ class SearchByDateForm(Form):
 class SearchForm(Form):
 	search = SearchField('Enter the title')
 
-class NewsForm(Form):
+class AddNewsForm(Form):
 	content = TextAreaField('Text', [DataRequired()])
 	submit = SubmitField('Send')
 
@@ -94,6 +94,6 @@ class DeleteForm(Form):
 	yes = SubmitField('Yes')
 	no = SubmitField('no')
 
-class ModifyForm(Form):
+class ModifyNewsForm(Form):
 	content = TextAreaField('Text', [DataRequired()])
 	submit = SubmitField('Modify')

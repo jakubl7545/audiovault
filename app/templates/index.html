@@ -29,14 +29,14 @@
 		<hr>
 		<h2>News</h2>
 		{% if current_user.is_admin == 1 %}
-			<a href="{{url_for('news')}}">Add news</a>
+			<a href="{{url_for('add_news')}}">Add news</a>
 		{% endif %}
 		{% for info in news %}
 			<div id="news">
 				<h3>{{info.created_at}}</h3>
 			<p>{{info.content}}</p>
 			{% if current_user.is_admin == 1 %}
-				<a href="{{url_for('modify', id=info.id)}}">Modify news</a>
+				<a href="{{url_for('modify_news', id=info.id)}}">Modify news</a>
 				<button class="removeButton" id="{{info.id}}">Remove news</button>
 			{% endif %}
 			</div>

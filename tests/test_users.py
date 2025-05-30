@@ -140,7 +140,7 @@ class TestUsers(unittest.TestCase):
 			assert current_user.is_authenticated == True
 
 	def test_change_password_form(self):
-		response = self.client.get('/change')
+		response = self.client.get('/change_password')
 		assert response.status_code == 200
 		html = response.get_data(as_text=True)
 		assert 'name="current_password"' in html
@@ -152,7 +152,7 @@ class TestUsers(unittest.TestCase):
 		response = self.client.post('/login', data = {
 			'email': 'user2@mail.com', 'password': 'Password2'
 		}, follow_redirects=True)
-		response = self.client.post('/change', data = {
+		response = self.client.post('/change_password', data = {
 			'current_password': 'Password2', 'new_password': 'Password3', 'confirm_password': 'Password3'
 		}, follow_redirects=True)
 		assert response.status_code == 200
@@ -162,7 +162,7 @@ class TestUsers(unittest.TestCase):
 		response = self.client.post('login', data = {
 			'email': 'user1@mail.com', 'password': 'Password1'
 		}, follow_redirects=True)
-		response = self.client.post('change', data = {
+		response = self.client.post('change_password', data = {
 			'current_password': 'Password2', 'new_password': 'Password1!', 'confirm_password': 'Password1!'
 		}, follow_redirects=True)
 		html = response.get_data(as_text=True)
@@ -172,7 +172,7 @@ class TestUsers(unittest.TestCase):
 		response = self.client.post('login', data = {
 			'email': 'user1@mail.com', 'password': 'Password1'
 		}, follow_redirects=True)
-		response = self.client.post('change', data = {
+		response = self.client.post('change_password', data = {
 			'current_password': 'Password1', 'new_password': 'Password1!', 'confirm_password': 'Password2'
 		}, follow_redirects=True)
 		html = response.get_data(as_text=True)

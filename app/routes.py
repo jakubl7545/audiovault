@@ -48,16 +48,16 @@ def register():
 		return redirect(url_for('index'))
 	return render_template('register.html', form=form)
 
-@app.route('/change', methods=['GET', 'POST'])
-def change():
-	form = ChangeForm()
+@app.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+	form = ChangePasswordForm()
 	if form.validate_on_submit():
 		user = Users(id=current_user.id)
 		user.set_password(form.new_password.data)
 		db.session.execute(db.update(Users), [{'id': user.id, 'password': user.password}])
 		db.session.commit()
 		return redirect(url_for('index'))
-	return render_template('change.html', form=form)
+	return render_template('change_password.html', form=form)
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
@@ -149,8 +149,8 @@ def upload():
 		return redirect(url_for('index'))
 	return render_template('upload.html', form=form)
 
-@app.route('/generate', methods=['POST'])
-def generate():
+@app.route('/generate_description', methods=['POST'])
+def generate_description():
 	description = get_description(request.form['title'])
 	return jsonify({'description': description})
 
@@ -193,8 +193,8 @@ def edit(id):
 		return redirect(url_for('index'))
 	return render_template('edit.html', form=form)
 
-@app.route('/add', methods=['POST'])
-def add():
+@app.route('/add_to_featured', methods=['POST'])
+def add_to_featured():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	try:
@@ -218,32 +218,32 @@ def remove():
 	db.session.commit()
 	return ''
 
-@app.route('/clear', methods=['POST'])
-def clear():
+@app.route('/clear_featured', methods=['POST'])
+def clear_featured():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	db.session.execute(db.delete(Featured))
 	db.session.commit()
 	return ''
 
-@app.route('/news', methods=['GET', 'POST'])
-def news():
+@app.route('/add_news', methods=['GET', 'POST'])
+def add_news():
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
-	form = NewsForm()
+	form = AddNewsForm()
 	if form.validate_on_submit():
 		news = News(content=form.content.data)
 		db.session.add(news)
 		db.session.commit()
 		return redirect(url_for('index'))
-	return render_template('news.html', form=form)
+	return render_template('add_news.html', form=form)
 
-@app.route('/modify/<id>', methods=['GET', 'POST'])
-def modify(id):
+@app.route('/modify_news/<id>', methods=['GET', 'POST'])
+def modify_news(id):
 	if current_user.is_anonymous or not current_user.is_admin:
 		return '<h1>You are not authorized to view this content</h1>'
 	item = db.session.get(News, id)
-	form = ModifyForm(obj=item)
+	form = ModifyNewsForm(obj=item)
 	if form.validate_on_submit():
 		db.session.execute(db.update(News), [{'id': id, 'content': form.content.data}])
 		db.session.commit()

@@ -1,7 +1,7 @@
 function generate() {
     var title = document.getElementById('name');
     var description = document.getElementById('description');
-    $.post('/generate', {'title': title.value
+    $.post('/generate_description', {'title': title.value
     }).done(function(response) {
         description.value += `${response['description']}`
     }).fail(function() {});

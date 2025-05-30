@@ -111,7 +111,7 @@ class TestContent(unittest.TestCase):
 
 	@unittest.skip('')
 	def test_generate_description(self):
-		response = self.client.post('/generate', data = {'title': 'Shrek'})
+		response = self.client.post('/generate_description', data = {'title': 'Shrek'})
 		assert 'grumpy ogre' in response.json['description']
 
 	def test_edit_form(self):
@@ -185,7 +185,7 @@ class TestContent(unittest.TestCase):
 
 	def test_add_to_featured(self):
 		self.create_entries()
-		response = self.client.post('/add', data={'id': 4})
+		response = self.client.post('/add_to_featured', data={'id': 4})
 		assert 'Added to featured' in response.json['message']
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
@@ -193,13 +193,13 @@ class TestContent(unittest.TestCase):
 
 	def test_add_to_featured_twice(self):
 		self.create_entries()
-		response = self.client.post('/add', data={'id': 4})
-		response = self.client.post('/add', data={'id': 4})
+		response = self.client.post('/add_to_featured', data={'id': 4})
+		response = self.client.post('/add_to_featured', data={'id': 4})
 		assert 'Already in featured' in response.json['message']
 
 	def test_remove_from_featured(self):
 		self.create_entries()
-		response = self.client.post('/add', data={'id': 4})
+		response = self.client.post('/add_to_featured', data={'id': 4})
 		response = self.client.post('/remove', data={'id': 1, 'type': 'featured'})
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
@@ -207,9 +207,9 @@ class TestContent(unittest.TestCase):
 
 	def test_clear_featured(self):
 		self.create_entries()
-		response = self.client.post('/add', data={'id': 1})
-		response = self.client.post('/add', data={'id': 2})
-		response = self.client.post('/clear')
+		response = self.client.post('/add_to_featured', data={'id': 1})
+		response = self.client.post('/add_to_featured', data={'id': 2})
+		response = self.client.post('/clear_featured')
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
 		assert 'class="collapsible"' not in html

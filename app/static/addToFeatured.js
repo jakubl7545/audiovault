@@ -1,5 +1,5 @@
-function add() {
-	$.post('/add', {id: this.id
+function addToFeatured() {
+	$.post('/add_to_featured', {id: this.id
 	}).done(function(response) {
 		alert(response['message'])
 	}).fail(function() {
@@ -10,5 +10,5 @@ function add() {
 var addButtons = document.querySelectorAll('.addButton');
 var i;
 for (i=0; i<addButtons.length; i++) {
-	addButtons[i].addEventListener('click', add);
+	addButtons[i].addEventListener('click', addToFeatured);
 }
