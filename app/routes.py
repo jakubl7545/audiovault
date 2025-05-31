@@ -9,8 +9,17 @@ from datetime import datetime, timezone
 from os import remove as rm
 import requests
 from shutil import move
+from functools import wraps
 
 login.login_view = 'login'
+
+def admin_only(endpoint):
+	@wraps(endpoint)
+	def decorated_function(*args, **kwargs):
+		if current_user.is_anonymous or not current_user.is_admin:
+			return '<h1>You are not authorized to view this content</h1><a href="/">Go to home page</a>'
+		return endpoint(*args, **kwargs)
+	return decorated_function
 
 @app.route('/')
 def index():
@@ -130,9 +139,8 @@ def content(content_type):
 	return render_template('content.html', content_type=content_type, entries=entries, search_by_date_form=search_by_date_form, search_form=search_form)
 
 @app.route('/upload', methods=['GET', 'POST'])
+@admin_only
 def upload():
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	form = UploadForm()
 	if form.validate_on_submit():
 		uploaded_file = request.files['file']
@@ -161,9 +169,8 @@ def download(id):
 	return send_file(file_path, as_attachment=True)
 
 @app.route('/delete/<id>', methods=['GET', 'POST'])
+@admin_only
 def delete(id):
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	form = DeleteForm()
 	name = db.session.scalar(db.select(Content.title).filter_by(id=id))
 	if form.yes.data:
@@ -178,9 +185,8 @@ def delete(id):
 	return render_template('delete.html', form=form, name=name)
 
 @app.route('/edit/<id>', methods=['GET', 'POST'])
+@admin_only
 def edit(id):
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	item = db.session.get(Content, id)
 	form = EditForm(obj=item)
 	if form.validate_on_submit():
@@ -194,9 +200,8 @@ def edit(id):
 	return render_template('edit.html', form=form)
 
 @app.route('/add_to_featured', methods=['POST'])
+@admin_only
 def add_to_featured():
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	try:
 		featured = Featured(content=db.session.get(Content, request.form['id']))
 		db.session.add(featured)
@@ -207,26 +212,23 @@ def add_to_featured():
 	return jsonify({'message': message})
 
 @app.route('/remove_featured', methods=['POST'])
+@admin_only
 def remove_featured():
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	removed_item = db.session.get(Featured, request.form['id'])
 	db.session.delete(removed_item)
 	db.session.commit()
 	return ''
 
 @app.route('/clear_featured', methods=['POST'])
+@admin_only
 def clear_featured():
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	db.session.execute(db.delete(Featured))
 	db.session.commit()
 	return ''
 
 @app.route('/add_news', methods=['GET', 'POST'])
+@admin_only
 def add_news():
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	form = AddNewsForm()
 	if form.validate_on_submit():
 		news = News(content=form.content.data)
@@ -236,9 +238,8 @@ def add_news():
 	return render_template('add_news.html', form=form)
 
 @app.route('/modify_news/<id>', methods=['GET', 'POST'])
+@admin_only
 def modify_news(id):
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	item = db.session.get(News, id)
 	form = ModifyNewsForm(obj=item)
 	if form.validate_on_submit():
@@ -248,9 +249,8 @@ def modify_news(id):
 	return render_template('edit.html', form=form)
 
 @app.route('/remove_news', methods=['POST'])
+@admin_only
 def remove_news():
-	if current_user.is_anonymous or not current_user.is_admin:
-		return '<h1>You are not authorized to view this content</h1>'
 	removed_item = db.session.get(News, request.form['id'])
 	db.session.delete(removed_item)
 	db.session.commit()
