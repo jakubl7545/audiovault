@@ -13,18 +13,20 @@
 		<p>Welcome to the Audiovault. This site contains the audio only portion of audio described film and TV shows. It is not intended to deprive copyright holders or service providers of income. Rather it is a small Project designed to make it easier for blind people to find and access audio described content that is spread across multiple platforms and countries. 
 		No video is hosted on this site. Nobody profits from this endeavour. It operates on donations from the small userbase purely in order to maintain the site.</p>
 		<h2>Featured</h2>
-		{%for item in featured%}
-			<button class="collapsible" aria-expanded="false">{{item.content.title}}</button>
-			<div class="content" id="featured" style="display:none">
-				<p>{{item.content.description}}</p>
-				<a href="{{url_for('download', id=item.content.id)}}">Download</a>
-				{% if current_user.is_admin == 1 %}
-					<button class="removeFeaturedButton" id="{{item.id}}">Remove from featured</button>
-				{% endif %}
-			</div>
-		{%endfor%}
-		{% if current_user.is_admin == 1 %}
-			<button id="clear_featured">Clear featured</button>
+		{% if featured %}
+			{%for item in featured%}
+				<button class="collapsible" aria-expanded="false">{{item.content.title}}</button>
+				<div class="content" id="featured" style="display:none">
+					<p>{{item.content.description}}</p>
+					<a href="{{url_for('download', id=item.content.id)}}">Download</a>
+					{% if current_user.is_admin == 1 %}
+						<button class="removeFeaturedButton" id="{{item.id}}">Remove from featured</button>
+					{% endif %}
+				</div>
+			{%endfor%}
+			{% if current_user.is_admin == 1 %}
+				<button id="clear_featured">Clear featured</button>
+			{% endif %}
 		{% endif %}
 		<hr>
 		<h2>News</h2>

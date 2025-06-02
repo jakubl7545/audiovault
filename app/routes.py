@@ -23,7 +23,7 @@ def admin_only(endpoint):
 
 @app.route('/')
 def index():
-	featured = db.session.scalars(db.select(Featured).order_by(Featured.id))
+	featured = db.session.scalars(db.select(Featured).order_by(Featured.id)).all()
 	news = db.session.scalars(db.select(News).order_by(News.id.desc()))
 	recent_shows = db.session.execute(db.select(Content.id, Content.title, Content.description).filter_by(
 		downloaded=1).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
