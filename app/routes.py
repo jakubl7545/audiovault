@@ -25,10 +25,10 @@ def admin_only(endpoint):
 def index():
 	featured = db.session.scalars(db.select(Featured).order_by(Featured.id)).all()
 	news = db.session.scalars(db.select(News).order_by(News.id.desc()))
-	recent_shows = db.session.execute(db.select(Content.id, Content.title, Content.description).filter_by(
-		downloaded=1).filter_by(type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
-	recent_movies = db.session.execute(db.select(Content.id, Content.title, Content.description).filter_by(
-		downloaded=1).filter_by(type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
+	recent_shows = db.session.scalars(db.select(Content).filter_by(downloaded=1).filter_by(
+		type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
+	recent_movies = db.session.scalars(db.select(Content).filter_by(downloaded=1).filter_by(
+		type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
 	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies, news=news)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -202,14 +202,10 @@ def edit(id):
 @app.route('/add_to_featured', methods=['POST'])
 @admin_only
 def add_to_featured():
-	try:
-		featured = Featured(content=db.session.get(Content, request.form['id']))
-		db.session.add(featured)
-		db.session.commit()
-		message = 'Added to featured'
-	except:
-		message = 'Already in featured'
-	return jsonify({'message': message})
+	featured = Featured(content=db.session.get(Content, request.form['id']))
+	db.session.add(featured)
+	db.session.commit()
+	return ''
 
 @app.route('/remove_featured', methods=['POST'])
 @admin_only

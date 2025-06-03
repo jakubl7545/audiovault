@@ -1,10 +1,8 @@
 function addToFeatured() {
 	$.post('/add_to_featured', {id: this.id
-	}).done(function(response) {
-		alert(response['message'])
-	}).fail(function() {
-		alert('Unable to add to featured')
-	});
+	}).done(function() {
+		location.reload(true)
+	}).fail(function() {});
 }
 
 for (let addButton of document.querySelectorAll('.addButton')) {

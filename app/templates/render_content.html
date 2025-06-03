@@ -17,7 +17,11 @@
 		{% if current_user.is_admin == 1 %}
 			<a href="{{url_for('delete', id=entry.id)}}">Delete</a>
 			<a href="{{url_for('edit', id=entry.id)}}">Edit</a>
-			<button class="addButton" id="{{entry.id}}">Add to featured</button>
+			{% if entry.featured %}
+				<button class="removeFeaturedButton" id="{{entry.featured.id}}">Remove from featured</button>
+			{% else %}
+				<button class="addButton" id="{{entry.id}}">Add to featured</button>
+			{% endif %}
 		{% endif %}
 		</td>
 	</tr>
