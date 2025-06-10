@@ -1,55 +1,45 @@
-<!doctype html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>{{content_type.capitalize()}}</title>
-</head>
-
-<body>
-	<div class="container">
-		{%include 'navbar.html'%}
-		<h1>View {{content_type}}</h1>
-		<form action="" method="get" role="search">
-			{{search_by_date_form.date.label}}
-			{{search_by_date_form.date}}
-			<button>Search by date</button>
-		</form>
-		<hr>
-		<form action="" method="get" role="search">
-			{{search_form.search.label}}
-			{{search_form.search}}
-			<button>Search</button>
-		</form>
-		<hr>
-		{% with entries=entries.items %}
-			{% include 'render_content.html' %}
-		{% endwith %}
-		{% if entries.pages >= 2 %}
-		<div role="navigation">
-		{% for page in entries.iter_pages(left_edge=config.PAGINATION_EDGE, left_current=config.PAGINATION_CURRENT,
-		right_current=config.PAGINATION_CURRENT, right_edge=config.PAGINATION_EDGE) %}
-			{% if page %}
-				{% if page != entries.page %}
-					{% if 'date' in request.args %}
-						<a href="{{url_for('content', content_type=content_type, date=request.args.get('date'), page=page)}}"> {{page}} </a>
-					{% elif 'search' in request.args %}
-						<a href="{{url_for('content', content_type=content_type, search=request.args.get('search'), page=page)}}"> {{page}} </a>
-					{% else %}
-						<a href="{{url_for('content', content_type=content_type, page=page)}}"> {{page}} </a>
-					{% endif %}
+{% extends "base.html" %}
+{% block title %}{{content_type.capitalize()}}{% endblock %}
+{% block content %}
+	<h1>View {{content_type}}</h1>
+	<form action="" method="get" role="search">
+		{{search_by_date_form.date.label}}
+		{{search_by_date_form.date}}
+		<button>Search by date</button>
+	</form>
+	<hr>
+	<form action="" method="get" role="search">
+		{{search_form.search.label}}
+		{{search_form.search}}
+		<button>Search</button>
+	</form>
+	<hr>
+	{% with entries=entries.items %}
+		{% include 'render_content.html' %}
+	{% endwith %}
+	{% if entries.pages >= 2 %}
+	<div role="navigation">
+	{% for page in entries.iter_pages(left_edge=config.PAGINATION_EDGE, left_current=config.PAGINATION_CURRENT,
+	right_current=config.PAGINATION_CURRENT, right_edge=config.PAGINATION_EDGE) %}
+		{% if page %}
+			{% if page != entries.page %}
+				{% if 'date' in request.args %}
+					<a href="{{url_for('content', content_type=content_type, date=request.args.get('date'), page=page)}}"> {{page}} </a>
+				{% elif 'search' in request.args %}
+					<a href="{{url_for('content', content_type=content_type, search=request.args.get('search'), page=page)}}"> {{page}} </a>
 				{% else %}
-					<p aria-current="page"> {{page}} </p>
+					<a href="{{url_for('content', content_type=content_type, page=page)}}"> {{page}} </a>
 				{% endif %}
 			{% else %}
-				<span>...</span>
+				<p aria-current="page"> {{page}} </p>
 			{% endif %}
-		{% endfor %}
-		</div>
+		{% else %}
+			<span>...</span>
 		{% endif %}
+	{% endfor %}
 	</div>
+	{% endif %}
 	<script src="{{url_for('static', filename='removeFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='addToFeatured.js')}}"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-</body>
-</html>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}

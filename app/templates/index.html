@@ -1,68 +1,58 @@
-<!doctype html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Audiovault</title>
-</head>
-
-<body>
-	<div class="container">
-		{%include 'navbar.html'%}
-		<h1>Welcome to the AudioVault</h1>
-		<p>Welcome to the Audiovault. This site contains the audio only portion of audio described film and TV shows. It is not intended to deprive copyright holders or service providers of income. Rather it is a small Project designed to make it easier for blind people to find and access audio described content that is spread across multiple platforms and countries. 
-		No video is hosted on this site. Nobody profits from this endeavour. It operates on donations from the small userbase purely in order to maintain the site.</p>
-		<h2>Featured</h2>
-		{% if featured %}
-			{%for item in featured%}
-				<button class="collapsible" aria-expanded="false">{{item.content.title}}</button>
-				<div class="content" id="featured" style="display:none">
-					<p>{{item.content.description}}</p>
-					<a href="{{url_for('download', id=item.content.id)}}">Download</a>
-					{% if current_user.is_admin == 1 %}
-						<button class="removeFeaturedButton" id="{{item.id}}">Remove from featured</button>
-					{% endif %}
-				</div>
-			{%endfor%}
+{% extends "base.html" %}
+{% block title %}Audiovault{% endblock %}
+{% block content %}
+	<h1>Welcome to the AudioVault</h1>
+	<p>Welcome to the Audiovault. This site contains the audio only portion of audio described film and TV shows. It is not intended to deprive copyright holders or service providers of income. Rather it is a small Project designed to make it easier for blind people to find and access audio described content that is spread across multiple platforms and countries.
+	No video is hosted on this site. Nobody profits from this endeavour. It operates on donations from the small userbase purely in order to maintain the site.</p>
+	<h2>Featured</h2>
+	{% if featured %}
+		{%for item in featured%}
+			<button class="collapsible" aria-expanded="false">{{item.content.title}}</button>
+			<div class="content" id="featured" style="display:none">
+			<p>{{item.content.description}}</p>
+			<a href="{{url_for('download', id=item.content.id)}}">Download</a>
 			{% if current_user.is_admin == 1 %}
-				<button id="clear_featured">Clear featured</button>
-			{% endif %}
-		{% endif %}
-		<hr>
-		<h2>News</h2>
-		{% if current_user.is_admin == 1 %}
-			<a href="{{url_for('add_news')}}">Add news</a>
-		{% endif %}
-		{% for info in news %}
-			<div id="news">
-				<h3>{{info.created_at}}</h3>
-			<p>{{info.content}}</p>
-			{% if current_user.is_admin == 1 %}
-				<a href="{{url_for('modify_news', id=info.id)}}">Modify news</a>
-				<button class="removeNewsButton" id="{{info.id}}">Remove news</button>
+				<button class="removeFeaturedButton" id="{{item.id}}">Remove from featured</button>
 			{% endif %}
 			</div>
-				{% endfor %}
-		<hr>
-		<h2>Recent shows</h2>
-		{% with entries=shows %}
-			{% include 'render_content.html' %}
-		{% endwith %}
-		<hr>
-		<h2>Recent movies</h2>
-		{% with entries=movies %}
-			{% include 'render_content.html' %}
-		{% endwith %}
-		<footer>
-			<a href="{{url_for('content', content_type='downloaded')}}">View downloaded</a>
-			<a href="{{url_for('content', content_type='failed')}}">View failed</a>
-		</footer>
-	</div>
+		{%endfor%}
+		{% if current_user.is_admin == 1 %}
+			<button id="clear_featured">Clear featured</button>
+		{% endif %}
+	{% endif %}
+	<hr>
+	<h2>News</h2>
+	{% if current_user.is_admin == 1 %}
+		<a href="{{url_for('add_news')}}">Add news</a>
+	{% endif %}
+	{% for info in news %}
+		<div id="news">
+		<h3>{{info.created_at}}</h3>
+		<p>{{info.content}}</p>
+		{% if current_user.is_admin == 1 %}
+			<a href="{{url_for('modify_news', id=info.id)}}">Modify news</a>
+			<button class="removeNewsButton" id="{{info.id}}">Remove news</button>
+		{% endif %}
+		</div>
+	{% endfor %}
+	<hr>
+	<h2>Recent shows</h2>
+	{% with entries=shows %}
+		{% include 'render_content.html' %}
+	{% endwith %}
+	<hr>
+	<h2>Recent movies</h2>
+	{% with entries=movies %}
+		{% include 'render_content.html' %}
+	{% endwith %}
+	<footer>
+		<a href="{{url_for('content', content_type='downloaded')}}">View downloaded</a>
+		<a href="{{url_for('content', content_type='failed')}}">View failed</a>
+	</footer>
 	<script src="{{url_for('static', filename='toggleFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='addToFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='removeFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='removeNews.js')}}"></script>
 	<script src="{{url_for('static', filename='clear_featured.js')}}"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-</body>
-</html>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}
