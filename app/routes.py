@@ -6,7 +6,6 @@ from .models import Users, Content, Featured, News
 from .description_generator import get_description
 from app.email_generator import send_password_reset_email
 from datetime import datetime, timezone
-from os import remove as rm
 import os, requests
 from shutil import move
 from functools import wraps
@@ -179,7 +178,7 @@ def delete(id):
 		db.session.delete(deleted_item)
 		db.session.commit()
 		if deleted_item.file_path is not None:
-			rm(deleted_item.file_path)
+			os.remove(deleted_item.file_path)
 		return redirect(url_for('index'))
 	elif form.no.data:
 		return redirect(url_for('index'))
