@@ -22,3 +22,4 @@ class Config:
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'Password123!'
 	MAIL_SENDER = os.environ.get('MAIL_SENDER') or 'audiovault@mail.com'
 	DISCORD_URL = os.environ.get('DISCORD_URL') or 'https://discordapp.com/api/webhooks/'
+	SEND_UPLOAD_NOTIFICATION = os.environ.get('SEND_UPLOAD_NOTIFICATION') or False

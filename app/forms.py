@@ -10,7 +10,7 @@ class UploadForm(Form):
 	name = StringField('Name', [DataRequired()])
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
-	file = FileField('Choose a field', [FileRequired(), FileAllowed(['mp3', 'zip'])])
+	file = FileField('Choose a file', [FileRequired(), FileAllowed(['mp3', 'zip'])])
 	submit = SubmitField('Upload')
 
 	def validate_name(self, name):

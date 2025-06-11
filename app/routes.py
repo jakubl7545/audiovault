@@ -7,7 +7,7 @@ from .description_generator import get_description
 from app.email_generator import send_password_reset_email
 from datetime import datetime, timezone
 from os import remove as rm
-import requests
+import os, requests
 from shutil import move
 from functools import wraps
 
@@ -145,15 +145,16 @@ def upload():
 	if form.validate_on_submit():
 		uploaded_file = request.files['file']
 		if form.type.data == 'movie':
-			file_path = ''.join((app.config['PATH_FOR_MOVIES'], uploaded_file.filename))
+			file_path = os.path.join(app.config['PATH_FOR_MOVIES'], uploaded_file.filename)
 		elif form.type.data == 'show':
-			file_path = ''.join((app.config['PATH_FOR_SHOWS'], uploaded_file.filename))
+			file_path = os.path.join(app.config['PATH_FOR_SHOWS'], uploaded_file.filename)
 		uploaded_file.save(file_path)
 		content = Content(title=form.name.data, type=form.type.data, description=form.description.data, file_path=file_path)
 		db.session.add(content)
 		db.session.commit()
-		#data = {'content': f'New item uploaded: {form.type.data} - {form.name.data}', 'username': 'AudioVault Notification Bot'}
-		#result = requests.post(app.config['DISCORD_URL'], json=data)
+		if app.config['SEND_UPLOAD_NOTIFICATION']:
+			data = {'content': f'New item uploaded: {form.type.data} - {form.name.data}', 'username': 'AudioVault Notification Bot'}
+			result = requests.post(app.config['DISCORD_URL'], json=data)
 		return redirect(url_for('index'))
 	return render_template('upload.html', form=form)
 
