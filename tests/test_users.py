@@ -166,7 +166,7 @@ class TestUsers(unittest.TestCase):
 			'current_password': 'Password2', 'new_password': 'Password1!', 'confirm_password': 'Password1!'
 		}, follow_redirects=True)
 		html = response.get_data(as_text=True)
-		assert 'Your current password is invalid' in html
+		assert 'password you entered does not match' in html
 
 	def test_validate_new_password_when_changing(self):
 		response = self.client.post('login', data = {

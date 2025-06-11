@@ -62,7 +62,7 @@ class ChangePasswordForm(Form):
 	def validate_current_password(self, current_password):
 		user = db.session.get(Users, current_user.id)
 		if not user.check_password(current_password.data):
-			raise ValidationError('Your current password is invalid')
+			raise ValidationError('The password you entered does not match current password for this account.')
 
 class ResetPasswordRequestForm(Form):
 	email = StringField('email', validators=[DataRequired(), Email()])
