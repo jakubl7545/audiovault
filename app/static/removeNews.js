@@ -1,8 +1,10 @@
 function removeNews() {
-	$.post('/remove_news', {'id': this.id
-	}).done(function() {
+	fetch('/remove_news', {method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		body: `id=${encodeURIComponent(this.id)}`
+	}).then(response => {
 		location.reload(true)
-	}).fail(function() {});
+	}).catch(error => {});
 }
 
 for (let removeButton of document.querySelectorAll('.removeNewsButton')) {

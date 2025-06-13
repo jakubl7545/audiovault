@@ -1,8 +1,10 @@
 function removeFeatured() {
-	$.post('/remove_featured', {'id': this.id
-	}).done(function() {
-		location.reload(true)
-	}).fail(function() {});
+	fetch('/remove_featured', {method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		body: `id=${encodeURIComponent(this.id)}`
+	}).then(response => {
+		location.reload(true);
+	}).catch(error => {});
 }
 
 for (let removeButton of document.querySelectorAll('.removeFeaturedButton')) {

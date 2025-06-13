@@ -1,7 +1,9 @@
 function clearFeatured() {
-    $.post('/clear_featured').done(function() {
-        location.reload(true)
-        }).fail(function() {});
+	fetch('/clear_featured', {method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+	}).then(response => {
+		location.reload(true)
+	}).catch(error => {});
 }
 
 var clearButton = document.querySelector('#clear_featured');

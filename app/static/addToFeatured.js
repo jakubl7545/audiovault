@@ -1,8 +1,10 @@
 function addToFeatured() {
-	$.post('/add_to_featured', {id: this.id
-	}).done(function() {
+	fetch('/add_to_featured', {method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		body: `id=${encodeURIComponent(this.id)}`
+	}).then(response => {
 		location.reload(true)
-	}).fail(function() {});
+	}).catch(error => {});
 }
 
 for (let addButton of document.querySelectorAll('.addButton')) {

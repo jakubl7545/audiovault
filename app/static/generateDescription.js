@@ -1,10 +1,12 @@
 function generate() {
-    var title = document.getElementById('name');
-    var description = document.getElementById('description');
-    $.post('/generate_description', {'title': title.value
-    }).done(function(response) {
-        description.value += `${response['description']}`
-    }).fail(function() {});
+	var title = document.getElementById('name');
+	var description = document.getElementById('description');
+	fetch('/generate_description', {method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		body: `title=${encodeURIComponent(title.value)}`
+	}).then(response => {return response.json();
+		}).then(data => {description.value += `${data.description}`;
+	}).catch(error => {});
 }
 
 var generateButton = document.querySelector('#generate_description');
