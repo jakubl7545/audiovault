@@ -7,4 +7,6 @@ function clearFeatured() {
 }
 
 var clearButton = document.querySelector('#clear_featured');
-clearButton.addEventListener('click', clearFeatured)
+if (clearButton !== null) {
+	clearButton.addEventListener('click', clearFeatured);
+}
