@@ -1,5 +1,5 @@
 from app import app, db, login
-from flask import render_template, redirect, url_for, request, send_file, jsonify
+from flask import render_template, redirect, url_for, request, send_file
 from flask_login import current_user, login_user, logout_user, login_required
 from .forms import *
 from .models import Users, Content, Featured, News
@@ -160,7 +160,7 @@ def upload():
 @app.route('/generate_description', methods=['POST'])
 def generate_description():
 	description = get_description(request.form['title'])
-	return jsonify({'description': description})
+	return {'description': description}
 
 @app.route('/download/<id>')
 @login_required

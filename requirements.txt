@@ -6,7 +6,7 @@ flask-sqlalchemy
 flask-migrate
 mariadb
 flask-login
-imdbpy
+cinemagoer
 pytest
 flask-bcrypt
 flask-mail
