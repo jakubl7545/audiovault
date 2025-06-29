@@ -1,3 +1,4 @@
+{% if entries %}
 <table>
 	<tr>
 		<th>ID</th>
@@ -27,3 +28,6 @@
 	</tr>
 	{%endfor%}
 </table>
+{% else %}
+	<p>Nothing matches your search.</p>
+{% endif %}

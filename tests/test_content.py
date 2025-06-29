@@ -255,6 +255,12 @@ class TestContent(unittest.TestCase):
 		assert 'Series2' in html
 		assert 'Series4' not in html
 
+	def test_search_nothing_found(self):
+		response = self.client.get('/shows?search=series1')
+		assert response.status_code == 200
+		html = response.get_data(as_text=True)
+		assert "Nothing matches your search" in html
+
 	def test_pagination(self):
 		self.create_entries()
 		response = self.client.get('/downloaded?page=2')
