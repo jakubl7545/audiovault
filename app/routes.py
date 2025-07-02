@@ -102,40 +102,28 @@ def content(content_type):
 	search_by_date_form = SearchByDateForm(request.args)
 	search_form = SearchForm(request.args)
 	page=request.args.get('page', 1, type=int)
-	if content_type == 'downloaded':
-		entries = db.paginate(db.select(Content).filter_by(downloaded=1).order_by(
-			Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
-		if 'date' in request.args:
-			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter(
-				Content.created_at >= request.args.get('date')).order_by(Content.title),
-				page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
-		elif 'search' in request.args:
-			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter(
-				Content.title.like("%" + request.args.get('search') + "%")).order_by(
-				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+	# convert content_type from plural to singular for db query
+	if content_type in {'shows', 'movies'}:
+		requested_con_type = {'shows': 'show', 'movies': 'movie'}[content_type]
+		initial_query = db.select(Content).filter_by(downloaded=1).filter_by(type=requested_con_type)
+	elif content_type == 'downloaded':
+		initial_query = db.select(Content).filter_by(downloaded=1)
 	elif content_type == 'failed':
-		entries = db.paginate(db.select(Content).filter_by(failed=1).order_by(
-			Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
-		if 'date' in request.args:
-			entries = db.paginate(db.select(Content).filter_by(failed=1).filter(
-				Content.created_at >= request.args.get('date')).order_by(Content.title),
-				page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
-		elif 'search' in request.args:
-			entries = db.paginate(db.select(Content).filter_by(failed=1).filter(
-				Content.title.like("%" + request.args.get('search') + "%")).order_by(
-				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+		initial_query = db.select(Content).filter_by(failed=1)
 	else:
-		entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter_by(type=content_type[:-1]
-			).order_by(Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
-		if 'date' in request.args:
-			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter_by(
-				type=content_type[:-1]).filter(Content.created_at>=request.args.get('date')).order_by(
-				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
-		elif 'search' in request.args:
-			entries = db.paginate(db.select(Content).filter_by(downloaded=1).filter_by(
-				type=content_type[:-1]).filter(Content.title.like("%"+request.args.get('search')+"%")).order_by(
-				Content.title), page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
-	return render_template('content.html', content_type=content_type, entries=entries, search_by_date_form=search_by_date_form, search_form=search_form)
+		return '<h1>This page is invalid</h1><a href="/">Go to home page</a>'
+	date_filter = request.args.get('date')
+	searched_phrase_filter = request.args.get('search')
+	if date_filter is not None:
+		final_query = initial_query.filter(Content.created_at >= date_filter)
+	elif searched_phrase_filter is not None:
+		final_query = initial_query.filter(Content.title.like(f'%{searched_phrase_filter}%'))
+	else:
+		final_query = initial_query
+	entries = db.paginate(final_query.order_by(Content.title),
+		page=page, per_page=app.config['ITEMS_PER_PAGE'], error_out=False)
+	return render_template('content.html', content_type=content_type, entries=entries,
+		search_by_date_form=search_by_date_form, search_form=search_form)
 
 @app.route('/upload', methods=['GET', 'POST'])
 @admin_only
