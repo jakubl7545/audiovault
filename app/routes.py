@@ -24,9 +24,9 @@ def admin_only(endpoint):
 def index():
 	featured = db.session.scalars(db.select(Featured).order_by(Featured.id)).all()
 	news = db.session.scalars(db.select(News).order_by(News.id.desc()))
-	recent_shows = db.session.scalars(db.select(Content).filter_by(downloaded=1).filter_by(
+	recent_shows = db.session.scalars(db.select(Content).filter_by(downloaded=True).filter_by(
 		type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
-	recent_movies = db.session.scalars(db.select(Content).filter_by(downloaded=1).filter_by(
+	recent_movies = db.session.scalars(db.select(Content).filter_by(downloaded=True).filter_by(
 		type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
 	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies, news=news)
 
@@ -105,11 +105,11 @@ def content(content_type):
 	# convert content_type from plural to singular for db query
 	if content_type in {'shows', 'movies'}:
 		requested_con_type = {'shows': 'show', 'movies': 'movie'}[content_type]
-		initial_query = db.select(Content).filter_by(downloaded=1).filter_by(type=requested_con_type)
+		initial_query = db.select(Content).filter_by(downloaded=True).filter_by(type=requested_con_type)
 	elif content_type == 'downloaded':
-		initial_query = db.select(Content).filter_by(downloaded=1)
+		initial_query = db.select(Content).filter_by(downloaded=True)
 	elif content_type == 'failed':
-		initial_query = db.select(Content).filter_by(failed=1)
+		initial_query = db.select(Content).filter_by(failed=True)
 	else:
 		return '<h1>This page is invalid</h1><a href="/">Go to home page</a>'
 	date_filter = request.args.get('date')

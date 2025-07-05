@@ -11,25 +11,25 @@
 			<div class="content" id="featured" style="display:none">
 			<p>{{item.content.description}}</p>
 			<a href="{{url_for('download', id=item.content.id)}}">Download</a>
-			{% if current_user.is_admin == 1 %}
+			{% if current_user.is_admin == True %}
 				<button class="removeFeaturedButton" id="{{item.id}}">Remove from featured</button>
 			{% endif %}
 			</div>
 		{%endfor%}
-		{% if current_user.is_admin == 1 %}
+		{% if current_user.is_admin == True %}
 			<button id="clear_featured">Clear featured</button>
 		{% endif %}
 	{% endif %}
 	<hr>
 	<h2>News</h2>
-	{% if current_user.is_admin == 1 %}
+	{% if current_user.is_admin == True %}
 		<a href="{{url_for('add_news')}}">Add news</a>
 	{% endif %}
 	{% for info in news %}
 		<div id="news">
 		<h3>{{info.created_at}}</h3>
 		<p>{{info.content}}</p>
-		{% if current_user.is_admin == 1 %}
+		{% if current_user.is_admin == True %}
 			<a href="{{url_for('modify_news', id=info.id)}}">Modify news</a>
 			<button class="removeNewsButton" id="{{info.id}}">Remove news</button>
 		{% endif %}
