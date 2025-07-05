@@ -28,7 +28,10 @@ def index():
 		type='show').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
 	recent_movies = db.session.scalars(db.select(Content).filter_by(downloaded=True).filter_by(
 		type='movie').order_by(Content.updated_at.desc()).limit(app.config['RECENTLY_ADDED']))
-	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies, news=news)
+	number_of_downloaded = db.session.scalar(db.select(db.func.count()).select_from(Content).filter_by(downloaded=True))
+	number_of_failed = db.session.scalar(db.select(db.func.count()).select_from(Content).filter_by(failed=True))
+	return render_template('index.html', featured=featured, shows=recent_shows, movies=recent_movies, news=news,
+		number_of_downloaded=number_of_downloaded, number_of_failed=number_of_failed)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

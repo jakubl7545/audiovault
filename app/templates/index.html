@@ -46,8 +46,13 @@
 		{% include 'render_content.html' %}
 	{% endwith %}
 	<footer>
-		<a href="{{url_for('content', content_type='downloaded')}}">View downloaded</a>
-		<a href="{{url_for('content', content_type='failed')}}">View failed</a>
+		<p>Statistics:</p>
+		<ul>
+			<li>Downloaded: {{ number_of_downloaded }}<br>
+			<a href="{{url_for('content', content_type='downloaded')}}">View all downloaded</a></li>
+			<li>Failed: {{ number_of_failed }}<br>
+			<a href="{{url_for('content', content_type='failed')}}">View all failed</a></li>
+		</ul>
 	</footer>
 	<script src="{{url_for('static', filename='toggleFeatured.js')}}"></script>
 	<script src="{{url_for('static', filename='addToFeatured.js')}}"></script>

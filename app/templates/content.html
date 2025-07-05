@@ -14,6 +14,7 @@
 		<button>Search</button>
 	</form>
 	<hr>
+<p>Found: {{ entries.total }} {{ content_type }}</p>
 	{% with entries=entries.items %}
 		{% include 'render_content.html' %}
 	{% endwith %}
