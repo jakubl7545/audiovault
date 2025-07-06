@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 import os, requests
 from shutil import move
 from functools import wraps
+from threading import Thread
 
 login.login_view = 'login'
 
@@ -143,10 +144,13 @@ def upload():
 		db.session.add(content)
 		db.session.commit()
 		if app.config['SEND_UPLOAD_NOTIFICATION']:
-			data = {'content': f'New item uploaded: {form.type.data} - {form.name.data}', 'username': 'AudioVault Notification Bot'}
-			result = requests.post(app.config['DISCORD_URL'], json=data)
+			Thread(target=send_notification, args=(form.type.data, form.name.data), daemon=True).start()
 		return redirect(url_for('index'))
 	return render_template('upload.html', form=form)
+
+def send_notification(type, name):
+	data = {'content': f'new item uploaded: {type} - {name}', 'username': 'AudioVault Notification Bot'}
+	return requests.post(app.config['DISCORD_URL'], json=data)
 
 @app.route('/generate_description', methods=['POST'])
 def generate_description():
