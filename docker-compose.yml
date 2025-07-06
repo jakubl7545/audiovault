@@ -13,7 +13,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql:Z
   app:
-    image: audiovault:0.2.1
+    image: audiovault:0.2.9
     ports:
       - "5000:5000"
     depends_on:
