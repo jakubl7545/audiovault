@@ -33,7 +33,7 @@ jobs:
           venv/bin/python -m pip install bandit
       - name: run tests
         run: |
-          sudo venv/bin/python -m pytest tests/test_content.py
+          venv/bin/python -m pytest tests/test_content.py
           venv/bin/python -m pytest tests/test_miscellaneous.py
           venv/bin/python -m pytest tests/test_users.py
       - name: check app for vulnerabilities
