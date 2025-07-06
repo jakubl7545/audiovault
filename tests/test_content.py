@@ -57,8 +57,8 @@ class TestContent(unittest.TestCase):
 		assert content.file_path == '/audiovault/series3.mp3'
 		assert content.created_at == date.today()
 		assert content.updated_at <= datetime.now(timezone.utc)
-		assert content.downloaded == True
-		assert content.failed == False
+		assert content.downloaded is True
+		assert content.failed is False
 
 	def test_featured_model_relations(self):
 		self.create_entries()
@@ -178,6 +178,23 @@ class TestContent(unittest.TestCase):
 		response = self.client.post('/upload', data={
 			'name': 'Movie6', 'type': 'movie', 'description': 'Movie6 description', 'file': (io.BytesIO(b'testfile'), 'movie6.mp3')
 		}, follow_redirects=True, content_type='multipart/form-data')
+		response = self.client.get('/download/1')
+		assert response.status_code == 200
+		assert b'testfile' in response.data
+
+	def test_download_as_non_admin(self):
+		response = self.client.post('/upload', data={
+			'name': 'Movie7', 'type': 'movie', 'description': 'Movie7 description',
+			'file': (io.BytesIO(b'testfile'), 'movie7.mp3')
+		}, follow_redirects=True, content_type='multipart/form-data')
+		response = self.client.get('/logout', follow_redirects=True)
+		user = Users(name='user2', email='user2@mail.com')
+		user.set_password('Password2')
+		db.session.add(user)
+		db.session.commit()
+		response = self.client.post('/login', data={
+			'email': 'user2@mail.com', 'password': 'Password2'
+		}, follow_redirects=True)
 		response = self.client.get('/download/1')
 		assert response.status_code == 200
 		assert b'testfile' in response.data

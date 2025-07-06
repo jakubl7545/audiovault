@@ -36,13 +36,13 @@ class TestUsers(unittest.TestCase):
 		user = Users(name='user3', email='user3@mail.com', is_admin=True)
 		assert user.name == 'user3'
 		assert user.email == 'user3@mail.com'
-		assert user.is_admin == True
+		assert user.is_admin is True
 
 	def test_password_hashing(self):
 		user = Users(name='user3', email='user3@mail.com')
 		user.set_password('Password3')
-		assert user.check_password('Password') == False
-		assert user.check_password('Password3') == True
+		assert user.check_password('Password') is False
+		assert user.check_password('Password3') is True
 
 	def test_register_form(self):
 		response = self.client.get('/register')
@@ -127,7 +127,7 @@ class TestUsers(unittest.TestCase):
 			assert response.status_code == 200
 			assert response.request.path == '/'
 			assert 'Log in' in html
-			assert current_user.is_anonymous == True
+			assert current_user.is_anonymous is True
 
 	def test_user_authentication(self):
 		with self.client:
@@ -137,7 +137,7 @@ class TestUsers(unittest.TestCase):
 			html = response.get_data(as_text=True)
 			assert 'Log out' in html
 			assert 'Upload' not in html
-			assert current_user.is_authenticated == True
+			assert current_user.is_authenticated is True
 
 	def test_change_password_form(self):
 		response = self.client.get('/change_password')

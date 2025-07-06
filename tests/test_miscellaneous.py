@@ -57,7 +57,7 @@ class TestMiscellaneous(unittest.TestCase):
 		html = response.get_data(as_text=True)
 		assert response.status_code == 200
 		assert 'Welcome to the AudioVault' in html
-		assert 'View downloaded' in html
+		assert 'View all downloaded' in html
 
 	def test_contact_page(self):
 		response = self.client.get('/contact')
