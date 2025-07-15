@@ -150,7 +150,7 @@ def upload():
 
 def send_notification(type, name):
 	data = {'content': f'new item uploaded: {type} - {name}', 'username': 'AudioVault Notification Bot'}
-	return requests.post(app.config['DISCORD_URL'], json=data)
+	return requests.post(app.config['DISCORD_URL'], json=data, timeout=10)
 
 @app.route('/generate_description', methods=['POST'])
 def generate_description():

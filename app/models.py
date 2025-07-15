@@ -6,7 +6,8 @@ import jwt
 from time import time
 from datetime import date, datetime, timezone
 
-password_reset_algorithm = 'HS256'
+# The following is not a password
+password_reset_algorithm = 'HS256'  # nosec
 
 class Content(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
