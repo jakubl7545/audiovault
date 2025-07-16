@@ -36,13 +36,13 @@ class TestUsers(unittest.TestCase):
 		user = Users(name='user3', email='user3@mail.com', is_admin=True)
 		assert user.name == 'user3'
 		assert user.email == 'user3@mail.com'
-		assert user.is_admin == True
+		assert user.is_admin is True
 
 	def test_password_hashing(self):
 		user = Users(name='user3', email='user3@mail.com')
 		user.set_password('Password3')
-		assert user.check_password('Password') == False
-		assert user.check_password('Password3') == True
+		assert user.check_password('Password') is False
+		assert user.check_password('Password3') is True
 
 	def test_register_form(self):
 		response = self.client.get('/register')
@@ -127,7 +127,7 @@ class TestUsers(unittest.TestCase):
 			assert response.status_code == 200
 			assert response.request.path == '/'
 			assert 'Log in' in html
-			assert current_user.is_anonymous == True
+			assert current_user.is_anonymous is True
 
 	def test_user_authentication(self):
 		with self.client:
@@ -137,10 +137,10 @@ class TestUsers(unittest.TestCase):
 			html = response.get_data(as_text=True)
 			assert 'Log out' in html
 			assert 'Upload' not in html
-			assert current_user.is_authenticated == True
+			assert current_user.is_authenticated is True
 
 	def test_change_password_form(self):
-		response = self.client.get('/change')
+		response = self.client.get('/change_password')
 		assert response.status_code == 200
 		html = response.get_data(as_text=True)
 		assert 'name="current_password"' in html
@@ -152,7 +152,7 @@ class TestUsers(unittest.TestCase):
 		response = self.client.post('/login', data = {
 			'email': 'user2@mail.com', 'password': 'Password2'
 		}, follow_redirects=True)
-		response = self.client.post('/change', data = {
+		response = self.client.post('/change_password', data = {
 			'current_password': 'Password2', 'new_password': 'Password3', 'confirm_password': 'Password3'
 		}, follow_redirects=True)
 		assert response.status_code == 200
@@ -162,17 +162,17 @@ class TestUsers(unittest.TestCase):
 		response = self.client.post('login', data = {
 			'email': 'user1@mail.com', 'password': 'Password1'
 		}, follow_redirects=True)
-		response = self.client.post('change', data = {
+		response = self.client.post('change_password', data = {
 			'current_password': 'Password2', 'new_password': 'Password1!', 'confirm_password': 'Password1!'
 		}, follow_redirects=True)
 		html = response.get_data(as_text=True)
-		assert 'Your current password is invalid' in html
+		assert 'password you entered does not match' in html
 
 	def test_validate_new_password_when_changing(self):
 		response = self.client.post('login', data = {
 			'email': 'user1@mail.com', 'password': 'Password1'
 		}, follow_redirects=True)
-		response = self.client.post('change', data = {
+		response = self.client.post('change_password', data = {
 			'current_password': 'Password1', 'new_password': 'Password1!', 'confirm_password': 'Password2'
 		}, follow_redirects=True)
 		html = response.get_data(as_text=True)

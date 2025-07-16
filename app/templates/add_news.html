@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {%import "bootstrap/wtf.html" as wtf%}
-{% block title %}Delete{% endblock %}
+{% block title %}Add news{% endblock %}
 {% block content %}
-	<h1>Are you sure you want to delete {{name}}?</h1>
+	<h1>Add news</h1>
 	{{wtf.quick_form(form)}}
 {% endblock %}

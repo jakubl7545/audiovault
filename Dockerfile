@@ -12,19 +12,18 @@ run apt-get update && apt-get upgrade -y \
     && apt-get install -y libmariadb-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 run addgroup --system audiovault && adduser --system --group audiovault
-env HOME /home/audiovault
-workdir $HOME
+workdir /home/audiovault
 run mkdir ./movies && mkdir ./shows
 copy requirements.txt .
 copy --from=builder /app/wheels /wheels
 run pip install --upgrade pip && pip install --no-cache /wheels/*
 copy app app
 copy migrations migrations
-copy boot.sh config.py main.py .
-env PATH_FOR_MOVIES $HOME/movies/
-env PATH_FOR_SHOWS $HOME/shows/
+copy boot.sh config.py .
 expose 5000
 run chown -R audiovault:audiovault .
 user audiovault
+env PATH_FOR_MOVIES=/home/audiovault/movies/
+env PATH_FOR_SHOWS=/home/audiovault/shows/
 run chmod 755 boot.sh
 cmd ["./boot.sh"]

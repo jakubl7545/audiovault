@@ -10,7 +10,7 @@ class UploadForm(Form):
 	name = StringField('Name', [DataRequired()])
 	type = SelectField('Type', [DataRequired()], choices=['movie', 'show'])
 	description = TextAreaField('Description', [DataRequired()])
-	file = FileField('Choose a field', [FileRequired(), FileAllowed(['mp3', 'zip'])])
+	file = FileField('Choose a file', [FileRequired(), FileAllowed(['mp3', 'zip'])])
 	submit = SubmitField('Upload')
 
 	def validate_name(self, name):
@@ -53,7 +53,7 @@ class RegisterForm(Form):
 		if user is not None:
 			raise ValidationError('Please use a different e-mail address')
 
-class ChangeForm(Form):
+class ChangePasswordForm(Form):
 	current_password = PasswordField('Current password', [DataRequired()])
 	new_password = PasswordField('New password', [DataRequired()])
 	confirm_password = PasswordField('Confirm new password', [EqualTo('new_password'), DataRequired()])
@@ -62,7 +62,7 @@ class ChangeForm(Form):
 	def validate_current_password(self, current_password):
 		user = db.session.get(Users, current_user.id)
 		if not user.check_password(current_password.data):
-			raise ValidationError('Your current password is invalid')
+			raise ValidationError('The password you entered does not match current password for this account.')
 
 class ResetPasswordRequestForm(Form):
 	email = StringField('email', validators=[DataRequired(), Email()])
@@ -86,7 +86,7 @@ class SearchByDateForm(Form):
 class SearchForm(Form):
 	search = SearchField('Enter the title')
 
-class NewsForm(Form):
+class AddNewsForm(Form):
 	content = TextAreaField('Text', [DataRequired()])
 	submit = SubmitField('Send')
 
@@ -94,6 +94,6 @@ class DeleteForm(Form):
 	yes = SubmitField('Yes')
 	no = SubmitField('no')
 
-class ModifyForm(Form):
+class ModifyNewsForm(Form):
 	content = TextAreaField('Text', [DataRequired()])
 	submit = SubmitField('Modify')

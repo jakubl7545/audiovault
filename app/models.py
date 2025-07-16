@@ -6,6 +6,9 @@ import jwt
 from time import time
 from datetime import date, datetime, timezone
 
+# The following is not a password
+password_reset_algorithm = 'HS256'  # nosec
+
 class Content(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
 	title: so.Mapped[str] = so.mapped_column(sa.String(100))
@@ -43,13 +46,13 @@ class Users(UserMixin, db.Model):
 
 	def get_reset_password_token(self, expires_in=600):
 		return jwt.encode(
-			{'reset_password': self.id, 'exp': time() + expires_in}, app.config['SECRET_KEY'], algorithm='HS256'
+			{'reset_password': self.id, 'exp': time() + expires_in}, app.config['SECRET_KEY'], algorithm=password_reset_algorithm
 		)
 
 	@staticmethod
 	def verify_reset_password_token(token):
 		try:
-			id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
+			id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=[password_reset_algorithm])['reset_password']
 		except:
 			return
 		return db.session.get(Users, id)

@@ -1,35 +1,24 @@
-<!doctype html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Upload</title>
-</head>
-
-<body>
-	<div class="container">
-		{%include 'navbar.html'%}
-		<h1>Upload</h1>
-		<form action="" method="post" enctype="multipart/form-data" role="form">
-			{{form.hidden_tag()}}
-			{{form.name.label}}
-			{{form.name}}
-			{% for error in form.name.errors %}
-				<p>{{error}}</p>
-			{% endfor %}
-			{{form.type.label}}
-			{{form.type}}
-			{{form.description.label}}
-			{{form.description}}
-			<button id="generate_description" type="button">Generate description</button>
-			{{form.file}}
-			{% for error in form.file.errors %}
-				<p>{{error}}</p>
-			{% endfor %}
-			{{form.submit}}
-		</form>
-	</div>
-<script src="{{url_for('static', filename='generateDescription.js')}}"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Upload{% endblock %}
+{% block content %}
+	<h1>Upload</h1>
+	<form action="" method="post" enctype="multipart/form-data" role="form">
+		{{form.hidden_tag()}}
+		{{form.name.label}}
+		{{form.name}}
+		{% for error in form.name.errors %}
+			<p>{{error}}</p>
+		{% endfor %}
+		{{form.type.label}}
+		{{form.type}}
+		{{form.description.label}}
+		{{form.description}}
+		<button id="generate_description" type="button">Generate description</button>
+		{{form.file}}
+		{% for error in form.file.errors %}
+			<p>{{error}}</p>
+		{% endfor %}
+		{{form.submit}}
+	</form>
+	<script src="{{url_for('static', filename='generateDescription.js')}}"></script>
+{% endblock %}

@@ -1,14 +1,12 @@
-function add() {
-	$.post('/add', {id: this.id
-	}).done(function(response) {
-		alert(response['message'])
-	}).fail(function() {
-		alert('Unable to add to featured')
-	});
+function addToFeatured() {
+	fetch('/add_to_featured', {method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		body: `id=${encodeURIComponent(this.id)}`
+	}).then(response => {
+		location.reload(true)
+	}).catch(error => {});
 }
 
-var addButtons = document.querySelectorAll('.addButton');
-var i;
-for (i=0; i<addButtons.length; i++) {
-	addButtons[i].addEventListener('click', add);
+for (let addButton of document.querySelectorAll('.addButton')) {
+	addButton.addEventListener('click', addToFeatured);
 }

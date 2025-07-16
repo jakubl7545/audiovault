@@ -57,8 +57,8 @@ class TestContent(unittest.TestCase):
 		assert content.file_path == '/audiovault/series3.mp3'
 		assert content.created_at == date.today()
 		assert content.updated_at <= datetime.now(timezone.utc)
-		assert content.downloaded == True
-		assert content.failed == False
+		assert content.downloaded is True
+		assert content.failed is False
 
 	def test_featured_model_relations(self):
 		self.create_entries()
@@ -109,9 +109,8 @@ class TestContent(unittest.TestCase):
 		html = response.get_data(as_text=True)
 		assert 'This item is already uploaded' in html
 
-	@unittest.skip('')
 	def test_generate_description(self):
-		response = self.client.post('/generate', data = {'title': 'Shrek'})
+		response = self.client.post('/generate_description', data = {'title': 'Shrek'})
 		assert 'grumpy ogre' in response.json['description']
 
 	def test_edit_form(self):
@@ -183,33 +182,43 @@ class TestContent(unittest.TestCase):
 		assert response.status_code == 200
 		assert b'testfile' in response.data
 
+	def test_download_as_non_admin(self):
+		response = self.client.post('/upload', data={
+			'name': 'Movie7', 'type': 'movie', 'description': 'Movie7 description',
+			'file': (io.BytesIO(b'testfile'), 'movie7.mp3')
+		}, follow_redirects=True, content_type='multipart/form-data')
+		response = self.client.get('/logout', follow_redirects=True)
+		user = Users(name='user2', email='user2@mail.com')
+		user.set_password('Password2')
+		db.session.add(user)
+		db.session.commit()
+		response = self.client.post('/login', data={
+			'email': 'user2@mail.com', 'password': 'Password2'
+		}, follow_redirects=True)
+		response = self.client.get('/download/1')
+		assert response.status_code == 200
+		assert b'testfile' in response.data
+
 	def test_add_to_featured(self):
 		self.create_entries()
-		response = self.client.post('/add', data={'id': 4})
-		assert 'Added to featured' in response.json['message']
+		response = self.client.post('/add_to_featured', data={'id': 4})
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
 		assert 'class="collapsible"' in html
 
-	def test_add_to_featured_twice(self):
-		self.create_entries()
-		response = self.client.post('/add', data={'id': 4})
-		response = self.client.post('/add', data={'id': 4})
-		assert 'Already in featured' in response.json['message']
-
 	def test_remove_from_featured(self):
 		self.create_entries()
-		response = self.client.post('/add', data={'id': 4})
-		response = self.client.post('/remove', data={'id': 1, 'type': 'featured'})
+		response = self.client.post('/add_to_featured', data={'id': 4})
+		response = self.client.post('/remove_featured', data={'id': 1})
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
 		assert 'class="collapsible"' not in html
 
 	def test_clear_featured(self):
 		self.create_entries()
-		response = self.client.post('/add', data={'id': 1})
-		response = self.client.post('/add', data={'id': 2})
-		response = self.client.post('/clear')
+		response = self.client.post('/add_to_featured', data={'id': 1})
+		response = self.client.post('/add_to_featured', data={'id': 2})
+		response = self.client.post('/clear_featured')
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
 		assert 'class="collapsible"' not in html
@@ -262,6 +271,12 @@ class TestContent(unittest.TestCase):
 		assert 'Series1' in html
 		assert 'Series2' in html
 		assert 'Series4' not in html
+
+	def test_search_nothing_found(self):
+		response = self.client.get('/shows?search=series1')
+		assert response.status_code == 200
+		html = response.get_data(as_text=True)
+		assert "Nothing matches your search" in html
 
 	def test_pagination(self):
 		self.create_entries()

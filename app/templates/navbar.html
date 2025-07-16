@@ -6,7 +6,7 @@
 			<li><a href="{{url_for('register')}}">Register</a></li>
 		{%else%}
 			<li><a href="{{url_for('logout')}}">Log out</a></li>
-			<li><a href="{{url_for('change')}}">Change password</a></li>
+			<li><a href="{{url_for('change_password')}}">Change password</a></li>
 		{%endif%}
 		<li><a href="{{url_for('contact')}}">Contact us</a></li>
 		<li><a href="https://www.paypal.me/audiodescribed">Support us via paypal</a></li>
@@ -14,7 +14,7 @@
 	<ul>
 		<li><a href="{{url_for('content', content_type='shows')}}">View shows</a></li>
 		<li><a href="{{url_for('content', content_type='movies')}}">View movies</a></li>
-		{%if current_user.is_admin == 1%}
+		{%if current_user.is_admin == True %}
 			<li><a href="{{url_for('upload')}}">Upload</a></li>
 		{%endif%}
 	</ul>

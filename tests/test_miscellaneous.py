@@ -57,7 +57,7 @@ class TestMiscellaneous(unittest.TestCase):
 		html = response.get_data(as_text=True)
 		assert response.status_code == 200
 		assert 'Welcome to the AudioVault' in html
-		assert 'View downloaded' in html
+		assert 'View all downloaded' in html
 
 	def test_contact_page(self):
 		response = self.client.get('/contact')
@@ -70,9 +70,9 @@ class TestMiscellaneous(unittest.TestCase):
 		assert news.content == 'News text'
 		assert news.created_at == date.today()
 
-	def test_news_form(self):
+	def test_add_news_form(self):
 		self.login_user()
-		response = self.client.get('/news')
+		response = self.client.get('/add_news')
 		assert response.status_code == 200
 		html = response.get_data(as_text=True)
 		assert 'name="content"' in html
@@ -80,7 +80,7 @@ class TestMiscellaneous(unittest.TestCase):
 
 	def  test_add_news(self):
 		self.login_user()
-		response = self.client.post('/news', data = {'content': 'New info'}, follow_redirects=True)
+		response = self.client.post('/add_news', data = {'content': 'New info'}, follow_redirects=True)
 		html = response.get_data(as_text=True)
 		assert response.status_code == 200
 		assert response.request.path == '/'
@@ -88,14 +88,14 @@ class TestMiscellaneous(unittest.TestCase):
 		assert f'{date.today()}' in html
 
 	def test_add_news_unauthorized_access(self):
-		response = self.client.get('/news')
+		response = self.client.get('/add_news')
 		html = response.get_data(as_text=True)
 		assert 'not authorized' in html
 
 	def test_modify_news_form(self):
 		self.login_user()
-		response = self.client.post('/news', data={'content': 'New info'}, follow_redirects=True)
-		response = self.client.get('/modify/1')
+		response = self.client.post('/add_news', data={'content': 'New info'}, follow_redirects=True)
+		response = self.client.get('/modify_news/1')
 		html = response.get_data(as_text=True)
 		assert response.status_code == 200
 		assert 'name="content"' in html
@@ -103,22 +103,22 @@ class TestMiscellaneous(unittest.TestCase):
 
 	def test_modify_news(self):
 		self.login_user()
-		response = self.client.post('/news', data={'content': 'New info'}, follow_redirects=True)
-		response = self.client.post('/modify/1', data={'content': 'Info updated'}, follow_redirects=True)
+		response = self.client.post('/add_news', data={'content': 'New info'}, follow_redirects=True)
+		response = self.client.post('/modify_news/1', data={'content': 'Info updated'}, follow_redirects=True)
 		html = response.get_data(as_text=True)
 		assert response.status_code == 200
 		assert response.request.path == '/'
 		assert 'Info updated' in html
 
 	def test_modify_news_unauthorized_access(self):
-		response = self.client.get('/modify/1')
+		response = self.client.get('/modify_news/1')
 		html = response.get_data(as_text=True)
 		assert 'not authorized' in html
 
 	def test_remove_news(self):
 		self.login_user()
-		response = self.client.post('/news', data={'content': 'New info'}, follow_redirects=True)
-		response = self.client.post('/remove', data={'id': 1, 'type': 'news'}, follow_redirects=True)
+		response = self.client.post('/add_news', data={'content': 'New info'}, follow_redirects=True)
+		response = self.client.post('/remove_news', data={'id': 1, 'type': 'news'}, follow_redirects=True)
 		response = self.client.get('/')
 		html = response.get_data(as_text=True)
 		assert 'New info' not in html
