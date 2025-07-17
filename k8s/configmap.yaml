@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: audiovault-config
+  namespace: audiovault
+data:
+  SQLALCHEMY_ECHO: "false"
+  SQLALCHEMY_TRACK_MODIFICATIONS: "false"
+  DB_NAME: "audiovault"
+  RECENTLY_ADDED: "10"
+  ITEMS_PER_PAGE: "20"
+  PAGINATION_EDGE: "3"
+  PAGINATION_CURRENT: "3"
+  PATH_FOR_SHOWS: "/home/audiovault/shows/"
+  PATH_FOR_MOVIES: "/home/audiovault/movies/"
+  MAX_CONTENT_LENGTH: "1073741824"

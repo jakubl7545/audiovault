@@ -3,3 +3,7 @@ instance/
 app/__pycache__/
 .idea/
 backup/
+**/.terraform/*
+*.hcl
+*.tfstate
+*.tfstate.*

@@ -22,3 +22,5 @@ class Config:
 	MAIL_SENDER = os.environ.get('MAIL_SENDER', 'audiovault@mail.com')
 	DISCORD_URL = os.environ.get('DISCORD_URL', 'https://discordapp.com/api/webhooks/')
 	SEND_UPLOAD_NOTIFICATION = int(os.environ.get('SEND_UPLOAD_NOTIFICATION', 0))
+	RATELIMIT_STORAGE_URI = os.environ.get('RATELIMIT_STORAGE_URI', 'memory://')
+	RATELIMIT_DOWNLOAD_ENDPOINT = os.environ.get('RATELIMIT_DOWNLOAD_ENDPOINT', '3 per minute')

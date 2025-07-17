@@ -13,7 +13,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql:Z
   app:
-    image: audiovault:0.2.9
+    image: audiovault:0.2.12
     ports:
       - "5000:5000"
     depends_on:
@@ -23,9 +23,12 @@ services:
       - DB_USER=root
       - DB_PASSWORD=Password123!
       - DB_NAME=audiovault
+      - RATELIMIT_STORAGE_URI=memcached://memcached:11211
     volumes:
       - movies:/home/audiovault/movies
       - shows:/home/audiovault/shows
+  memcached:
+    image: bitnami/memcached:1.6.38-debian-12-r8
 volumes:
   db-data:
   movies:
