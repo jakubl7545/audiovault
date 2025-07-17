@@ -13,3 +13,5 @@ flask-mail==0.10.0
 pyjwt==2.10.1
 requests==2.32.4
 gunicorn==23.0.0
+flask-limiter==3.12
+pymemcache==4.0.0

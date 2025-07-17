@@ -1,4 +1,4 @@
-from app import app, db, login
+from app import app, db, login, limiter
 from flask import render_template, redirect, url_for, request, send_file
 from flask_login import current_user, login_user, logout_user, login_required
 from .forms import *
@@ -159,6 +159,7 @@ def generate_description():
 
 @app.route('/download/<id>')
 @login_required
+@limiter.limit(app.config['RATELIMIT_DOWNLOAD_ENDPOINT'], key_func=lambda: current_user.name)
 def download(id):
 	file_path = db.session.scalar(db.select(Content.file_path).filter_by(id=id))
 	return send_file(file_path, as_attachment=True)
