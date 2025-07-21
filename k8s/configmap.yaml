@@ -14,3 +14,6 @@ data:
   PATH_FOR_SHOWS: "/home/audiovault/shows/"
   PATH_FOR_MOVIES: "/home/audiovault/movies/"
   MAX_CONTENT_LENGTH: "1073741824"
+  SEND_UPLOAD_NOTIFICATION: "0"
+  RATELIMIT_STORAGE_URI: "memcached://elasticache:11211"
+  RATELIMIT_DOWNLOAD_ENDPOINT: "3 per minute"

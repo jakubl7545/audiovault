@@ -21,7 +21,7 @@ spec:
         fsGroup: 101
       containers:
       - name: audiovault
-        image: 168361641029.dkr.ecr.eu-north-1.amazonaws.com/audiovault:c08380ed5c8475c4a32b5a110a4429ace7fbb208
+        image: 168361641029.dkr.ecr.eu-north-1.amazonaws.com/audiovault:a07989e5860a5988232a9c1bef9daba7d5d5ef02
         volumeMounts:
         - name: secret-volume
           mountPath: "/mnt/secrets-store"
