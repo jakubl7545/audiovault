@@ -19,7 +19,7 @@ copy --from=builder /app/wheels /wheels
 run pip install --upgrade pip && pip install --no-cache /wheels/*
 copy app app
 copy migrations migrations
-copy boot.sh config.py .
+copy boot.sh config.py gunicorn_config.py .
 expose 5000
 run chown -R audiovault:audiovault .
 user audiovault
