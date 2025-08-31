@@ -5,11 +5,11 @@ module "vpc" {
   name = "audiovault-vpc"
   azs = ["eu-north-1a", "eu-north-1b"]
   cidr = "10.0.0.0/16"
-  private_subnets = ["10.0.0.0/20", "10.0.16.0/20"]
-  public_subnets = ["10.0.32.0/20", "10.0.48.0/20"]
-  intra_subnets = ["10.0.64.0/24", "10.0.65.0/24"]
-  database_subnets = ["10.0.66.0/24", "10.0.67.0/24"]
-  elasticache_subnets = ["10.0.68.0/24", "10.0.69.0/24"]
+  private_subnets = var.private_subnets
+  public_subnets = var.public_subnets
+  intra_subnets = var.intra_subnets
+  database_subnets = var.database_subnets
+  elasticache_subnets = var.elasticache_subnets
   enable_nat_gateway = true
   single_nat_gateway = true
   enable_dns_hostnames = true

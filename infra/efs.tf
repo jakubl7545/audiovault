@@ -64,6 +64,6 @@ resource "aws_efs_file_system" "audiovault_efs" {
 resource "aws_efs_mount_target" "audiovault_efs_mount" {
   file_system_id = aws_efs_file_system.audiovault_efs.id
   security_groups = [aws_security_group.audiovault_efs_sg.id]
-    for_each = toset(module.vpc.private_subnets)
-    subnet_id = each.key
+    for_each = var.private_subnets
+    subnet_id = each.value
 }
